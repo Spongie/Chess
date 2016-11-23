@@ -11,7 +11,14 @@ namespace Chess.Pieces
 
         public override IEnumerable<Move> GetLegalMoves()
         {
-            throw new System.NotImplementedException();
+            var legalMoves = new List<Move>();
+
+            legalMoves.AddRange(GetVerticalUpMoves());
+            legalMoves.AddRange(GetVerticalDownMoves());
+            legalMoves.AddRange(GetHorizontalMoves());
+            legalMoves.AddRange(GetDiagonalMoves());
+
+            return legalMoves;
         }
     }
 }

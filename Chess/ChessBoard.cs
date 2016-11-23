@@ -7,13 +7,14 @@ namespace Chess
 {
     public class ChessBoard
     {
+        private const int BoardSize = 8;
         private static ChessBoard instance;
-        private Piece[,] board;
+        private readonly Piece[,] board;
 
         public ChessBoard()
         {
             instance = this;
-            board = new Piece[8,8];
+            board = new Piece[BoardSize, BoardSize];
 
             GenerateBlackSide();
             GenerateWhiteSide();
@@ -32,7 +33,7 @@ namespace Chess
             board[7, 6] = new Knight(Color.White);
             board[7, 7] = new Rook(Color.White);
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < BoardSize; i++)
             {
                 board[6, i] = new Pawn(Color.White);
             }
@@ -49,10 +50,24 @@ namespace Chess
             board[0, 6] = new Knight(Color.Black);
             board[0, 7] = new Rook(Color.Black);
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < BoardSize; i++)
             {
                 board[1, i] = new Pawn(Color.Black);
             }
+        }
+
+        public IEnumerable<Move> GetAllAvailableMoves(Color color)
+        {
+            var legalMoves = new List<Move>();
+            foreach (Piece piece in board)
+            {
+                if (piece != null && piece.Color == color)
+                {
+                    legalMoves.AddRange(piece.GetLegalMoves());
+                }
+            }
+
+            return legalMoves;
         }
 
         public void GetAvailableMoves(Piece piece)
@@ -62,9 +77,9 @@ namespace Chess
 
         public Position GetPiecePosition(Piece piece)
         {
-            for (int x = 0; x < 8; x++)
+            for (int x = 0; x < BoardSize; x++)
             {
-                for (int y = 0; y < 8; y++)
+                for (int y = 0; y < BoardSize; y++)
                 {
                     if (board[y, x] == piece)
                         return new Position(y, x);
@@ -76,7 +91,7 @@ namespace Chess
 
         public bool IsPositionInsideBoard(int x, int y)
         {
-            return x >= 0 && x < 8 && y >= 0 && y < 8;
+            return x >= 0 && x < BoardSize && y >= 0 && y < BoardSize;
         }
 
         public Piece GetPieceAtPosition(int x, int y)

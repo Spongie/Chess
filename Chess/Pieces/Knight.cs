@@ -11,7 +11,19 @@ namespace Chess.Pieces
 
         public override IEnumerable<Move> GetLegalMoves()
         {
-            throw new System.NotImplementedException();
+            var legalMoves = new List<Move>();
+            var startPosition = ChessBoard.Instance.GetPiecePosition(this);
+
+            AddMove(GetMoveToPosition(startPosition.X + 1, startPosition.Y + 2), legalMoves);
+            AddMove(GetMoveToPosition(startPosition.X - 1, startPosition.Y + 2), legalMoves);
+            AddMove(GetMoveToPosition(startPosition.X + 1, startPosition.Y - 2), legalMoves);
+            AddMove(GetMoveToPosition(startPosition.X - 1, startPosition.Y - 2), legalMoves);
+            AddMove(GetMoveToPosition(startPosition.X + 2, startPosition.Y + 1), legalMoves);
+            AddMove(GetMoveToPosition(startPosition.X - 2, startPosition.Y + 1), legalMoves);
+            AddMove(GetMoveToPosition(startPosition.X + 2, startPosition.Y - 1), legalMoves);
+            AddMove(GetMoveToPosition(startPosition.X - 2, startPosition.Y - 1), legalMoves);
+
+            return legalMoves;
         }
     }
 }

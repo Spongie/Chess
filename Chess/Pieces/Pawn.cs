@@ -11,7 +11,7 @@ namespace Chess.Pieces
 
         public override IEnumerable<Move> GetLegalMoves()
         {
-            throw new System.NotImplementedException();
+            return Color == Color.White ? GetVerticalUpMoves() : GetVerticalDownMoves();
         }
     }
 }

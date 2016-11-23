@@ -8,6 +8,18 @@ namespace Chess.Pieces
         Black
     }
 
+    public enum Directions
+    {
+        Left,
+        Right,
+        Up,
+        Down,
+        RightUp,
+        RightDown,
+        LeftUp,
+        LeftDown
+    }
+
     public abstract class Piece
     {
         protected Piece(Color color)
@@ -26,11 +38,15 @@ namespace Chess.Pieces
         {
             var startPosition = ChessBoard.Instance.GetPiecePosition(this);
             var legalMoves = new List<Move>();
+            var blockedDirections = new List<Directions>();
 
-            for (int moveLength = 1; moveLength < MaxMoveLength; moveLength++)
+            for (int moveLength = 1; moveLength <= MaxMoveLength; moveLength++)
             {
-                AddMove(GetMoveToPosition(startPosition.X + moveLength, startPosition.Y), legalMoves);
-                AddMove(GetMoveToPosition(startPosition.X - moveLength, startPosition.Y), legalMoves);
+                if(!blockedDirections.Contains(Directions.Right) && !AddMove(GetMoveToPosition(startPosition.X + moveLength, startPosition.Y), legalMoves))
+                    blockedDirections.Add(Directions.Right);
+
+                if (!blockedDirections.Contains(Directions.Left) && !AddMove(GetMoveToPosition(startPosition.X - moveLength, startPosition.Y), legalMoves))
+                    blockedDirections.Add(Directions.Left);
             }
 
             return legalMoves;
@@ -41,9 +57,10 @@ namespace Chess.Pieces
             var startPosition = ChessBoard.Instance.GetPiecePosition(this);
             var legalMoves = new List<Move>();
 
-            for (int moveLength = 1; moveLength < MaxMoveLength; moveLength++)
+            for (int moveLength = 1; moveLength <= MaxMoveLength; moveLength++)
             {
-                AddMove(GetMoveToPosition(startPosition.X, startPosition.Y - moveLength), legalMoves);
+                if (!AddMove(GetMoveToPosition(startPosition.X, startPosition.Y - moveLength), legalMoves))
+                    break;
             }
 
             return legalMoves;
@@ -54,9 +71,10 @@ namespace Chess.Pieces
             var startPosition = ChessBoard.Instance.GetPiecePosition(this);
             var legalMoves = new List<Move>();
 
-            for (int moveLength = 1; moveLength < MaxMoveLength; moveLength++)
+            for (int moveLength = 1; moveLength <= MaxMoveLength; moveLength++)
             {
-                AddMove(GetMoveToPosition(startPosition.X, startPosition.Y + moveLength), legalMoves);
+                if (!AddMove(GetMoveToPosition(startPosition.X, startPosition.Y + moveLength), legalMoves))
+                    break;
             }
 
             return legalMoves;
@@ -66,19 +84,22 @@ namespace Chess.Pieces
         {
             var startPosition = ChessBoard.Instance.GetPiecePosition(this);
             var legalMoves = new List<Move>();
+            var blockedDirections = new List<Directions>();
 
-            for (int moveLength = 1; moveLength < MaxMoveLength; moveLength++)
+            for (int moveLength = 1; moveLength <= MaxMoveLength; moveLength++)
             {
-                AddMove(GetMoveToPosition(startPosition.X + moveLength, startPosition.Y + moveLength), legalMoves);
-                AddMove(GetMoveToPosition(startPosition.X - moveLength, startPosition.Y + moveLength), legalMoves);
-                AddMove(GetMoveToPosition(startPosition.X + moveLength, startPosition.Y - moveLength), legalMoves);
-                AddMove(GetMoveToPosition(startPosition.X - moveLength, startPosition.Y - moveLength), legalMoves);
+                if (!blockedDirections.Contains(Directions.RightDown) && !AddMove(GetMoveToPosition(startPosition.X + moveLength, startPosition.Y + moveLength), legalMoves))
+                    blockedDirections.Add(Directions.RightDown);
+                if (!blockedDirections.Contains(Directions.LeftDown) && !AddMove(GetMoveToPosition(startPosition.X - moveLength, startPosition.Y + moveLength), legalMoves))
+                    blockedDirections.Add(Directions.LeftDown);
+                if (!blockedDirections.Contains(Directions.RightUp) && !AddMove(GetMoveToPosition(startPosition.X + moveLength, startPosition.Y - moveLength), legalMoves))
+                    blockedDirections.Add(Directions.RightUp);
+                if (!blockedDirections.Contains(Directions.LeftUp) && !AddMove(GetMoveToPosition(startPosition.X - moveLength, startPosition.Y - moveLength), legalMoves))
+                    blockedDirections.Add(Directions.LeftUp);
             }
 
             return legalMoves;
         }
-
-
 
         protected Move GetMoveToPosition(int x, int y)
         {
@@ -93,10 +114,15 @@ namespace Chess.Pieces
             return null;
         }
 
-        public void AddMove(Move move, List<Move> legalMoves)
+        public bool AddMove(Move move, List<Move> legalMoves)
         {
             if (move != null)
+            {
                 legalMoves.Add(move);
+                return true;
+            }
+
+            return false;
         }
     }
 }
