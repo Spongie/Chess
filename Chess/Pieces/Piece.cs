@@ -4,8 +4,8 @@ namespace Chess.Pieces
 {
     public enum Color
     {
-        White,
-        Black
+        White = -1,
+        Black = 1
     }
 
     public enum Directions
@@ -119,6 +119,11 @@ namespace Chess.Pieces
             if (move != null)
             {
                 legalMoves.Add(move);
+
+                var pieceAtTarget = ChessBoard.Instance.GetPieceAtPosition(move.TargetPosition.X, move.TargetPosition.Y);
+                if (pieceAtTarget != null && pieceAtTarget.Color == ChessBoard.InvertColor(Color))
+                    return false;
+
                 return true;
             }
 

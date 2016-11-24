@@ -2,7 +2,7 @@
 
 namespace Chess.Pieces
 {
-    internal class Pawn : Piece
+    public class Pawn : Piece
     {
         public Pawn(Color color) : base(color)
         {

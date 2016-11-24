@@ -9,12 +9,11 @@ namespace Chess
     {
         private const int BoardSize = 8;
         private static ChessBoard instance;
-        private readonly Piece[,] board;
 
         public ChessBoard()
         {
             instance = this;
-            board = new Piece[BoardSize, BoardSize];
+            Board = new Piece[BoardSize, BoardSize];
 
             GenerateBlackSide();
             GenerateWhiteSide();
@@ -22,52 +21,101 @@ namespace Chess
 
         public static ChessBoard Instance => instance;
 
+        public Piece[,] Board { get; set; }
+
         private void GenerateWhiteSide()
         {
-            board[7, 0] = new Rook(Color.White);
-            board[7, 1] = new Knight(Color.White);
-            board[7, 2] = new Bishop(Color.White);
-            board[7, 3] = new Queen(Color.White);
-            board[7, 4] = new King(Color.White);
-            board[7, 5] = new Bishop(Color.White);
-            board[7, 6] = new Knight(Color.White);
-            board[7, 7] = new Rook(Color.White);
+            Board[7, 0] = new Rook(Color.White);
+            Board[7, 1] = new Knight(Color.White);
+            Board[7, 2] = new Bishop(Color.White);
+            Board[7, 3] = new Queen(Color.White);
+            Board[7, 4] = new King(Color.White);
+            Board[7, 5] = new Bishop(Color.White);
+            Board[7, 6] = new Knight(Color.White);
+            Board[7, 7] = new Rook(Color.White);
 
             for (int i = 0; i < BoardSize; i++)
             {
-                board[6, i] = new Pawn(Color.White);
+                Board[6, i] = new Pawn(Color.White);
             }
         }
 
         private void GenerateBlackSide()
         {
-            board[0, 0] = new Rook(Color.Black);
-            board[0, 1] = new Knight(Color.Black);
-            board[0, 2] = new Bishop(Color.Black);
-            board[0, 3] = new Queen(Color.Black);
-            board[0, 4] = new King(Color.Black);
-            board[0, 5] = new Bishop(Color.Black);
-            board[0, 6] = new Knight(Color.Black);
-            board[0, 7] = new Rook(Color.Black);
+            Board[0, 0] = new Rook(Color.Black);
+            Board[0, 1] = new Knight(Color.Black);
+            Board[0, 2] = new Bishop(Color.Black);
+            Board[0, 3] = new Queen(Color.Black);
+            Board[0, 4] = new King(Color.Black);
+            Board[0, 5] = new Bishop(Color.Black);
+            Board[0, 6] = new Knight(Color.Black);
+            Board[0, 7] = new Rook(Color.Black);
 
             for (int i = 0; i < BoardSize; i++)
             {
-                board[1, i] = new Pawn(Color.Black);
+                Board[1, i] = new Pawn(Color.Black);
             }
+        }
+
+        public Piece[,] GetBoardAfterMove(Move move)
+        {
+            var newBoard = (Piece[,])Board.Clone();
+            var position = GetPiecePosition(move.Piece);
+
+            newBoard[position.Y, position.X] = null;
+            newBoard[move.TargetPosition.Y, move.TargetPosition.X] = move.Piece;
+
+            return newBoard;
+        }
+
+        private Position GetKingPosition(Color color)
+        {
+            for (int x = 0; x < BoardSize; x++)
+            {
+                for (int y = 0; y < BoardSize; y++)
+                {
+                    if (Board[y, x] != null && Board[y, x] is King)
+                        return new Position(y, x);
+                }
+            }
+
+            throw new InvalidOperationException("Error no king noob");
+        }
+
+        public bool IsInCheckAfterMove(Color color, Move move)
+        {
+            var boardAfterMove = GetBoardAfterMove(move);
+            var kingPosition = GetKingPosition(color);
+
+            var moves = GetAllAvailableMovesWithBoard(InvertColor(color), boardAfterMove, false);
+
+            return moves.Any(opponentMove => opponentMove.TargetPosition.Equals(kingPosition));
+        }
+
+        public IEnumerable<Move> GetAllAvailableMovesWithBoard(Color color, Piece[,] board, bool checkIfCheck = true)
+        {
+            var legalMoves = new List<Move>();
+
+            foreach (Piece piece in board)
+            {
+                if (piece != null && piece.Color == color)
+                    legalMoves.AddRange(piece.GetLegalMoves());
+            }
+
+            if (checkIfCheck)
+                return legalMoves.Where(move => !IsInCheckAfterMove(color, move));
+
+            return legalMoves;
         }
 
         public IEnumerable<Move> GetAllAvailableMoves(Color color)
         {
-            var legalMoves = new List<Move>();
-            foreach (Piece piece in board)
-            {
-                if (piece != null && piece.Color == color)
-                {
-                    legalMoves.AddRange(piece.GetLegalMoves());
-                }
-            }
+            return GetAllAvailableMovesWithBoard(color, Board);
+        }
 
-            return legalMoves;
+        public static Color InvertColor(Color color)
+        {
+            return (Color)((int)color * -1);
         }
 
         public void GetAvailableMoves(Piece piece)
@@ -81,7 +129,7 @@ namespace Chess
             {
                 for (int y = 0; y < BoardSize; y++)
                 {
-                    if (board[y, x] == piece)
+                    if (Board[y, x] == piece)
                         return new Position(y, x);
                 }
             }
@@ -96,7 +144,7 @@ namespace Chess
 
         public Piece GetPieceAtPosition(int x, int y)
         {
-            return board[y, x];
+            return Board[y, x];
         }
     }
 }
