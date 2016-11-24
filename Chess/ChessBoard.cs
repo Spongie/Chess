@@ -24,8 +24,8 @@ namespace Chess
             Board[7, 0] = new Rook(Color.White);
             Board[7, 1] = new Knight(Color.White);
             Board[7, 2] = new Bishop(Color.White);
-            Board[7, 3] = new Queen(Color.White);
-            Board[7, 4] = new King(Color.White);
+            Board[7, 3] = new King(Color.White);
+            Board[7, 4] = new Queen(Color.White);
             Board[7, 5] = new Bishop(Color.White);
             Board[7, 6] = new Knight(Color.White);
             Board[7, 7] = new Rook(Color.White);
@@ -41,8 +41,8 @@ namespace Chess
             Board[0, 0] = new Rook(Color.Black);
             Board[0, 1] = new Knight(Color.Black);
             Board[0, 2] = new Bishop(Color.Black);
-            Board[0, 3] = new Queen(Color.Black);
-            Board[0, 4] = new King(Color.Black);
+            Board[0, 3] = new King(Color.Black);
+            Board[0, 4] = new Queen(Color.Black);
             Board[0, 5] = new Bishop(Color.Black);
             Board[0, 6] = new Knight(Color.Black);
             Board[0, 7] = new Rook(Color.Black);
@@ -64,7 +64,7 @@ namespace Chess
             return newBoard;
         }
 
-        private Position GetKingPosition(Color color, Piece[,] board)
+        public Position GetKingPosition(Color color, Piece[,] board)
         {
             for (int x = 0; x < BoardSize; x++)
             {
@@ -115,6 +115,11 @@ namespace Chess
             return legalMoves;
         }
 
+        public Position GetKingPosition(Color color)
+        {
+            return GetKingPosition(color, Board);
+        }
+
         public IEnumerable<Move> GetAllAvailableMoves(Color color)
         {
             return GetAllAvailableMovesWithBoard(color, this);
@@ -123,11 +128,6 @@ namespace Chess
         public static Color InvertColor(Color color)
         {
             return (Color)((int)color * -1);
-        }
-
-        public void GetAvailableMoves(Piece piece)
-        {
-            
         }
 
         public Position GetPiecePosition(Piece piece)

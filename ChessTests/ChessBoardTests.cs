@@ -112,5 +112,71 @@ namespace ChessTests
 
             Assert.AreEqual(1, c.GetAllAvailableMoves(board[1, 3]).Count());
         }
+
+        public void GetKingPosition_Black()
+        {
+            var c = new ChessBoard();
+            var board = new Piece[8, 8];
+
+            board[0, 3] = new King(Color.Black);
+            board[5, 3] = new King(Color.White);
+
+            c.Board = board;
+
+            Assert.AreEqual(new Position(0, 3), c.GetKingPosition(Color.Black));
+        }
+
+        public void GetKingPosition_White()
+        {
+            var c = new ChessBoard();
+            var board = new Piece[8, 8];
+
+            board[0, 3] = new King(Color.Black);
+            board[5, 3] = new King(Color.White);
+
+            c.Board = board;
+
+            Assert.AreEqual(new Position(5, 3), c.GetKingPosition(Color.White));
+        }
+
+        [TestMethod]
+        public void QueenBlockedAllWays_0Moves()
+        {
+            var c = new ChessBoard();
+
+            Assert.AreEqual(0, c.GetAllAvailableMoves(c.Board[7, 3]).Count());
+        }
+
+        [TestMethod]
+        public void BlackQueenBlockedFrontOpen_1Move()
+        {
+            var c = new ChessBoard();
+
+            var move = new Move
+            {
+                Piece = c.GetPieceAtPosition(4, 1),
+                TargetPosition = new Position(2, 4)
+            };
+
+            c.MakeMove(move);
+
+            Assert.AreEqual(1, c.GetAllAvailableMoves(c.Board[0, 4]).Count());
+        }
+
+        [TestMethod]
+        public void WhiteQueenBlockedFrontOpen_1Move()
+        {
+            var c = new ChessBoard();
+
+            var move = new Move
+            {
+                Piece = c.GetPieceAtPosition(4, 6),
+                TargetPosition = new Position(5, 4)
+            };
+
+            c.MakeMove(move);
+
+            Assert.AreEqual(1, c.GetAllAvailableMoves(c.Board[7, 4]).Count());
+        }
     }
 }
