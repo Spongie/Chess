@@ -32,80 +32,87 @@ namespace Chess.Pieces
 
         public int MaxMoveLength { get; protected set; }
 
-        public abstract IEnumerable<Move> GetLegalMoves();
+        public int AmountOfMoves { get; protected set; }
 
-        protected IEnumerable<Move> GetHorizontalMoves()
+        public abstract IEnumerable<Move> GetLegalMoves(ChessBoard board);
+
+        public virtual void OnMoved()
         {
-            var startPosition = ChessBoard.Instance.GetPiecePosition(this);
+            AmountOfMoves++;
+        }
+
+        protected IEnumerable<Move> GetHorizontalMoves(ChessBoard board)
+        {
+            var startPosition = board.GetPiecePosition(this);
             var legalMoves = new List<Move>();
             var blockedDirections = new List<Directions>();
 
             for (int moveLength = 1; moveLength <= MaxMoveLength; moveLength++)
             {
-                if(!blockedDirections.Contains(Directions.Right) && !AddMove(GetMoveToPosition(startPosition.X + moveLength, startPosition.Y), legalMoves))
+                if(!blockedDirections.Contains(Directions.Right) && !AddMove(GetMoveToPosition(startPosition.X + moveLength, startPosition.Y, board), legalMoves, board))
                     blockedDirections.Add(Directions.Right);
 
-                if (!blockedDirections.Contains(Directions.Left) && !AddMove(GetMoveToPosition(startPosition.X - moveLength, startPosition.Y), legalMoves))
+                if (!blockedDirections.Contains(Directions.Left) && !AddMove(GetMoveToPosition(startPosition.X - moveLength, startPosition.Y, board), legalMoves, board))
                     blockedDirections.Add(Directions.Left);
             }
 
             return legalMoves;
         }
 
-        protected IEnumerable<Move> GetVerticalUpMoves()
+        protected IEnumerable<Move> GetVerticalUpMoves(ChessBoard board)
         {
-            var startPosition = ChessBoard.Instance.GetPiecePosition(this);
+            var startPosition = board.GetPiecePosition(this);
             var legalMoves = new List<Move>();
 
             for (int moveLength = 1; moveLength <= MaxMoveLength; moveLength++)
             {
-                if (!AddMove(GetMoveToPosition(startPosition.X, startPosition.Y - moveLength), legalMoves))
+                if (!AddMove(GetMoveToPosition(startPosition.X, startPosition.Y - moveLength, board), legalMoves, board))
                     break;
             }
 
             return legalMoves;
         }
 
-        protected IEnumerable<Move> GetVerticalDownMoves()
+        protected IEnumerable<Move> GetVerticalDownMoves(ChessBoard board)
         {
-            var startPosition = ChessBoard.Instance.GetPiecePosition(this);
+            var startPosition = board.GetPiecePosition(this);
             var legalMoves = new List<Move>();
 
             for (int moveLength = 1; moveLength <= MaxMoveLength; moveLength++)
             {
-                if (!AddMove(GetMoveToPosition(startPosition.X, startPosition.Y + moveLength), legalMoves))
+                if (!AddMove(GetMoveToPosition(startPosition.X, startPosition.Y + moveLength, board), legalMoves, board))
                     break;
             }
 
             return legalMoves;
         }
 
-        protected IEnumerable<Move> GetDiagonalMoves()
+        protected IEnumerable<Move> GetDiagonalMoves(ChessBoard board)
         {
-            var startPosition = ChessBoard.Instance.GetPiecePosition(this);
+            var startPosition = board.GetPiecePosition(this);
             var legalMoves = new List<Move>();
             var blockedDirections = new List<Directions>();
 
             for (int moveLength = 1; moveLength <= MaxMoveLength; moveLength++)
             {
-                if (!blockedDirections.Contains(Directions.RightDown) && !AddMove(GetMoveToPosition(startPosition.X + moveLength, startPosition.Y + moveLength), legalMoves))
+                if (!blockedDirections.Contains(Directions.RightDown) && !AddMove(GetMoveToPosition(startPosition.X + moveLength, startPosition.Y + moveLength, board), legalMoves, board))
                     blockedDirections.Add(Directions.RightDown);
-                if (!blockedDirections.Contains(Directions.LeftDown) && !AddMove(GetMoveToPosition(startPosition.X - moveLength, startPosition.Y + moveLength), legalMoves))
+                if (!blockedDirections.Contains(Directions.LeftDown) && !AddMove(GetMoveToPosition(startPosition.X - moveLength, startPosition.Y + moveLength, board), legalMoves, board))
                     blockedDirections.Add(Directions.LeftDown);
-                if (!blockedDirections.Contains(Directions.RightUp) && !AddMove(GetMoveToPosition(startPosition.X + moveLength, startPosition.Y - moveLength), legalMoves))
+                if (!blockedDirections.Contains(Directions.RightUp) && !AddMove(GetMoveToPosition(startPosition.X + moveLength, startPosition.Y - moveLength, board), legalMoves, board))
                     blockedDirections.Add(Directions.RightUp);
-                if (!blockedDirections.Contains(Directions.LeftUp) && !AddMove(GetMoveToPosition(startPosition.X - moveLength, startPosition.Y - moveLength), legalMoves))
+                if (!blockedDirections.Contains(Directions.LeftUp) && !AddMove(GetMoveToPosition(startPosition.X - moveLength, startPosition.Y - moveLength, board), legalMoves, board))
                     blockedDirections.Add(Directions.LeftUp);
             }
 
             return legalMoves;
         }
 
-        protected Move GetMoveToPosition(int x, int y)
+        protected Move GetMoveToPosition(int x, int y, ChessBoard board)
         {
-            if (ChessBoard.Instance.IsPositionInsideBoard(x, y))
+            if (board.IsPositionInsideBoard(x, y))
             {
-                var pieceOnTarget = ChessBoard.Instance.GetPieceAtPosition(x, y);
+                var pieceOnTarget = board.GetPieceAtPosition(x, y);
 
                 if (pieceOnTarget == null || pieceOnTarget.Color != Color)
                     return new Move { Piece = this, TargetPosition = new Position(y, x) };
@@ -114,13 +121,13 @@ namespace Chess.Pieces
             return null;
         }
 
-        public bool AddMove(Move move, List<Move> legalMoves)
+        public bool AddMove(Move move, List<Move> legalMoves, ChessBoard board)
         {
             if (move != null)
             {
                 legalMoves.Add(move);
 
-                var pieceAtTarget = ChessBoard.Instance.GetPieceAtPosition(move.TargetPosition.X, move.TargetPosition.Y);
+                var pieceAtTarget = board.GetPieceAtPosition(move.TargetPosition.X, move.TargetPosition.Y);
                 if (pieceAtTarget != null && pieceAtTarget.Color == ChessBoard.InvertColor(Color))
                     return false;
 

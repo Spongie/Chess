@@ -9,9 +9,9 @@ namespace Chess.Pieces
             MaxMoveLength = 7;
         }
 
-        public override IEnumerable<Move> GetLegalMoves()
+        public override IEnumerable<Move> GetLegalMoves(ChessBoard board)
         {
-            return GetDiagonalMoves();
+            return GetDiagonalMoves(board);
         }
     }
 }

@@ -68,5 +68,49 @@ namespace ChessTests
 
             Assert.AreEqual(1, moves.Count());
         }
+
+        [TestMethod]
+        public void GetLegalMoves_Knight()
+        {
+            var c = new ChessBoard();
+            var board = new Piece[8, 8];
+
+            board[4,3] = new King(Color.White);
+            board[4,4] = new Knight(Color.White);
+
+            c.Board = board;
+
+            Assert.AreEqual(8, c.GetAllAvailableMoves(board[4, 4]).Count());
+        }
+
+        [TestMethod]
+        public void GetLegalMoves_PawnHas2MovesBeforeMoving()
+        {
+            var c = new ChessBoard();
+            var board = new Piece[8, 8];
+
+            board[0, 3] = new King(Color.Black);
+            board[1, 3] = new Pawn(Color.Black);
+
+            c.Board = board;
+
+            Assert.AreEqual(2, c.GetAllAvailableMoves(board[1, 3]).Count());
+        }
+
+        [TestMethod]
+        public void GetLegalMoves_PawnHas1MovesAfterMoving()
+        {
+            var c = new ChessBoard();
+            var board = new Piece[8, 8];
+
+            board[0, 3] = new King(Color.Black);
+            board[1, 3] = new Pawn(Color.Black);
+
+            c.Board = board;
+
+            c.MakeMove(new Move {Piece = board[1, 3], TargetPosition = new Position(2, 3)});
+
+            Assert.AreEqual(1, c.GetAllAvailableMoves(board[1, 3]).Count());
+        }
     }
 }

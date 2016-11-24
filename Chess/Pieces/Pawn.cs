@@ -9,9 +9,15 @@ namespace Chess.Pieces
             MaxMoveLength = 2;
         }
 
-        public override IEnumerable<Move> GetLegalMoves()
+        public override IEnumerable<Move> GetLegalMoves(ChessBoard board)
         {
-            return Color == Color.White ? GetVerticalUpMoves() : GetVerticalDownMoves();
+            return Color == Color.White ? GetVerticalUpMoves(board) : GetVerticalDownMoves(board);
+        }
+
+        public override void OnMoved()
+        {
+            MaxMoveLength = 1;
+            base.OnMoved();
         }
     }
 }

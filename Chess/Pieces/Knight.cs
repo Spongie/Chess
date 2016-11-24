@@ -9,19 +9,19 @@ namespace Chess.Pieces
             MaxMoveLength = 7;
         }
 
-        public override IEnumerable<Move> GetLegalMoves()
+        public override IEnumerable<Move> GetLegalMoves(ChessBoard board)
         {
             var legalMoves = new List<Move>();
-            var startPosition = ChessBoard.Instance.GetPiecePosition(this);
+            var startPosition = board.GetPiecePosition(this);
 
-            AddMove(GetMoveToPosition(startPosition.X + 1, startPosition.Y + 2), legalMoves);
-            AddMove(GetMoveToPosition(startPosition.X - 1, startPosition.Y + 2), legalMoves);
-            AddMove(GetMoveToPosition(startPosition.X + 1, startPosition.Y - 2), legalMoves);
-            AddMove(GetMoveToPosition(startPosition.X - 1, startPosition.Y - 2), legalMoves);
-            AddMove(GetMoveToPosition(startPosition.X + 2, startPosition.Y + 1), legalMoves);
-            AddMove(GetMoveToPosition(startPosition.X - 2, startPosition.Y + 1), legalMoves);
-            AddMove(GetMoveToPosition(startPosition.X + 2, startPosition.Y - 1), legalMoves);
-            AddMove(GetMoveToPosition(startPosition.X - 2, startPosition.Y - 1), legalMoves);
+            AddMove(GetMoveToPosition(startPosition.X + 1, startPosition.Y + 2, board), legalMoves, board);
+            AddMove(GetMoveToPosition(startPosition.X - 1, startPosition.Y + 2, board), legalMoves, board);
+            AddMove(GetMoveToPosition(startPosition.X + 1, startPosition.Y - 2, board), legalMoves, board);
+            AddMove(GetMoveToPosition(startPosition.X - 1, startPosition.Y - 2, board), legalMoves, board);
+            AddMove(GetMoveToPosition(startPosition.X + 2, startPosition.Y + 1, board), legalMoves, board);
+            AddMove(GetMoveToPosition(startPosition.X - 2, startPosition.Y + 1, board), legalMoves, board);
+            AddMove(GetMoveToPosition(startPosition.X + 2, startPosition.Y - 1, board), legalMoves, board);
+            AddMove(GetMoveToPosition(startPosition.X - 2, startPosition.Y - 1, board), legalMoves, board);
 
             return legalMoves;
         }

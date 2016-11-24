@@ -8,19 +8,15 @@ namespace Chess
     public class ChessBoard
     {
         private const int BoardSize = 8;
-        private static ChessBoard instance;
 
         public ChessBoard()
         {
-            instance = this;
             Board = new Piece[BoardSize, BoardSize];
 
             GenerateBlackSide();
             GenerateWhiteSide();
         }
-
-        public static ChessBoard Instance => instance;
-
+        
         public Piece[,] Board { get; set; }
 
         private void GenerateWhiteSide()
@@ -68,13 +64,13 @@ namespace Chess
             return newBoard;
         }
 
-        private Position GetKingPosition(Color color)
+        private Position GetKingPosition(Color color, Piece[,] board)
         {
             for (int x = 0; x < BoardSize; x++)
             {
                 for (int y = 0; y < BoardSize; y++)
                 {
-                    if (Board[y, x] != null && Board[y, x] is King)
+                    if (board[y, x] != null && board[y, x] is King && board[y, x].Color == color)
                         return new Position(y, x);
                 }
             }
@@ -82,24 +78,35 @@ namespace Chess
             throw new InvalidOperationException("Error no king noob");
         }
 
+        public void MakeMove(Move move)
+        {
+            Board = GetBoardAfterMove(move);
+            move.Piece.OnMoved();
+        }
+
+        public IEnumerable<Move> GetAllAvailableMoves(Piece piece)
+        {
+            return piece.GetLegalMoves(this);
+        }
+
         public bool IsInCheckAfterMove(Color color, Move move)
         {
             var boardAfterMove = GetBoardAfterMove(move);
-            var kingPosition = GetKingPosition(color);
+            var kingPosition = GetKingPosition(color, boardAfterMove);
 
-            var moves = GetAllAvailableMovesWithBoard(InvertColor(color), boardAfterMove, false);
+            var moves = GetAllAvailableMovesWithBoard(InvertColor(color), new ChessBoard {Board = boardAfterMove}, false);
 
             return moves.Any(opponentMove => opponentMove.TargetPosition.Equals(kingPosition));
         }
 
-        public IEnumerable<Move> GetAllAvailableMovesWithBoard(Color color, Piece[,] board, bool checkIfCheck = true)
+        public IEnumerable<Move> GetAllAvailableMovesWithBoard(Color color, ChessBoard board, bool checkIfCheck = true)
         {
             var legalMoves = new List<Move>();
 
-            foreach (Piece piece in board)
+            foreach (Piece piece in board.Board)
             {
                 if (piece != null && piece.Color == color)
-                    legalMoves.AddRange(piece.GetLegalMoves());
+                    legalMoves.AddRange(piece.GetLegalMoves(board));
             }
 
             if (checkIfCheck)
@@ -110,7 +117,7 @@ namespace Chess
 
         public IEnumerable<Move> GetAllAvailableMoves(Color color)
         {
-            return GetAllAvailableMovesWithBoard(color, Board);
+            return GetAllAvailableMovesWithBoard(color, this);
         }
 
         public static Color InvertColor(Color color)
@@ -134,7 +141,7 @@ namespace Chess
                 }
             }
 
-            throw new ArgumentOutOfRangeException("FUCKING ERROR NOOB");
+            throw new ArgumentOutOfRangeException(nameof(piece), piece, "Piece not found on board");
         }
 
         public bool IsPositionInsideBoard(int x, int y)
