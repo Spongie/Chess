@@ -151,6 +151,9 @@ namespace Chess
 
         public Piece GetPieceAtPosition(int x, int y)
         {
+            if (!IsPositionInsideBoard(x, y))
+                return null;
+
             return Board[y, x];
         }
     }

@@ -178,5 +178,20 @@ namespace ChessTests
 
             Assert.AreEqual(1, c.GetAllAvailableMoves(c.Board[7, 4]).Count());
         }
+
+        [TestMethod]
+        public void PawnAttacksDiagonal()
+        {
+            var c = new ChessBoard();
+
+            var board = new Piece[8, 8];
+
+            board[1,0] = new Pawn(Color.Black);
+            board[2,1] = new Rook(Color.White);
+
+            c.Board = board;
+
+            Assert.AreEqual(3, c.GetAllAvailableMoves(c.Board[1,0]).Count());
+        }
     }
 }
