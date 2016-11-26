@@ -61,12 +61,31 @@ namespace Chess.Pieces
 
         protected IEnumerable<Move> GetVerticalUpMoves(ChessBoard board)
         {
+            return GetVerticalUpMoves(board, false);
+        }
+
+        protected IEnumerable<Move> GetVerticalUpMoves(ChessBoard board, bool blockedByAnything)
+        {
             var startPosition = board.GetPiecePosition(this);
             var legalMoves = new List<Move>();
 
             for (int moveLength = 1; moveLength <= MaxMoveLength; moveLength++)
             {
-                if (!AddMove(GetMoveToPosition(startPosition.X, startPosition.Y - moveLength, board), legalMoves, board))
+                if (!AddMove(GetMoveToPosition(startPosition.X, startPosition.Y - moveLength, board, blockedByAnything), legalMoves, board))
+                    break;
+            }
+
+            return legalMoves;
+        }
+
+        protected IEnumerable<Move> GetVerticalDownMoves(ChessBoard board, bool blockedByAnything)
+        {
+            var startPosition = board.GetPiecePosition(this);
+            var legalMoves = new List<Move>();
+
+            for (int moveLength = 1; moveLength <= MaxMoveLength; moveLength++)
+            {
+                if (!AddMove(GetMoveToPosition(startPosition.X, startPosition.Y + moveLength, board, blockedByAnything), legalMoves, board))
                     break;
             }
 
@@ -75,16 +94,7 @@ namespace Chess.Pieces
 
         protected IEnumerable<Move> GetVerticalDownMoves(ChessBoard board)
         {
-            var startPosition = board.GetPiecePosition(this);
-            var legalMoves = new List<Move>();
-
-            for (int moveLength = 1; moveLength <= MaxMoveLength; moveLength++)
-            {
-                if (!AddMove(GetMoveToPosition(startPosition.X, startPosition.Y + moveLength, board), legalMoves, board))
-                    break;
-            }
-
-            return legalMoves;
+            return GetVerticalDownMoves(board, false);
         }
 
         protected IEnumerable<Move> GetDiagonalMoves(ChessBoard board)
@@ -110,9 +120,17 @@ namespace Chess.Pieces
 
         protected Move GetMoveToPosition(int x, int y, ChessBoard board)
         {
+            return GetMoveToPosition(x, y, board, false);
+        }
+
+        protected Move GetMoveToPosition(int x, int y, ChessBoard board, bool blockedByAnything)
+        {
             if (board.IsPositionInsideBoard(x, y))
             {
                 var pieceOnTarget = board.GetPieceAtPosition(x, y);
+
+                if (pieceOnTarget != null && blockedByAnything)
+                    return null;
 
                 if (pieceOnTarget == null || pieceOnTarget.Color != Color)
                     return new Move { Piece = this, TargetPosition = new Position(y, x) };

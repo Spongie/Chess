@@ -13,7 +13,7 @@ namespace Chess.Pieces
         {
             var moves = GetAttackingMoves(board);
 
-            moves.AddRange(Color == Color.White ? GetVerticalUpMoves(board) : GetVerticalDownMoves(board));
+            moves.AddRange(Color == Color.White ? GetVerticalUpMoves(board, true) : GetVerticalDownMoves(board, true));
 
             return moves;
         }
