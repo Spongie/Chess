@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Chess.Pieces
 {
@@ -20,12 +21,14 @@ namespace Chess.Pieces
         LeftDown
     }
 
+    [Serializable]
     public abstract class Piece
     {
         protected Piece(Color color)
         {
             Color = color;
             MaxMoveLength = 1;
+            Id = Guid.NewGuid();
         }
 
         public Color Color { get; protected set; }
@@ -34,7 +37,11 @@ namespace Chess.Pieces
 
         public int AmountOfMoves { get; protected set; }
 
+        public Guid Id { get; }
+
         public abstract IEnumerable<Move> GetLegalMoves(ChessBoard board);
+
+        public abstract string GetFenRepresentation();
 
         public virtual void OnMoved()
         {
@@ -153,6 +160,21 @@ namespace Chess.Pieces
             }
 
             return false;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var other = obj as Piece;
+
+            if (other == null)
+                return false;
+
+            return other.Id == Id;
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
         }
     }
 }

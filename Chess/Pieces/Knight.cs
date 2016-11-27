@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Chess.Pieces
 {
+    [Serializable]
     public class Knight : Piece
     {
         public Knight(Color color) : base(color)
@@ -24,6 +26,11 @@ namespace Chess.Pieces
             AddMove(GetMoveToPosition(startPosition.X - 2, startPosition.Y - 1, board), legalMoves, board);
 
             return legalMoves;
+        }
+
+        public override string GetFenRepresentation()
+        {
+            return Color == Color.Black ? "n" : "N";
         }
     }
 }

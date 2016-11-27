@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Chess.Pieces
 {
+    [Serializable]
     public class Bishop : Piece
     {
         public Bishop(Color color) : base(color)
@@ -12,6 +14,11 @@ namespace Chess.Pieces
         public override IEnumerable<Move> GetLegalMoves(ChessBoard board)
         {
             return GetDiagonalMoves(board);
+        }
+
+        public override string GetFenRepresentation()
+        {
+            return Color == Color.Black ? "b" : "B";
         }
     }
 }

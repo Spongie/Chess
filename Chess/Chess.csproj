@@ -40,6 +40,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\ChessBot.cs" />
+    <Compile Include="AI\EvalCacheKey.cs" />
+    <Compile Include="AI\IBoardEvaluator.cs" />
+    <Compile Include="AI\MoveNode.cs" />
+    <Compile Include="AI\OnlyPiecesMatterEvaluator.cs" />
+    <Compile Include="ObjectExtensions.cs" />
     <Compile Include="Pieces\Bishop.cs" />
     <Compile Include="ChessBoard.cs" />
     <Compile Include="Pieces\King.cs" />

@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using Chess.Pieces;
 
 namespace Chess
 {
+    [Serializable]
     public class ChessBoard
     {
         private const int BoardSize = 8;
@@ -53,6 +56,16 @@ namespace Chess
             }
         }
 
+        public ChessBoard CopyWithMove(Move move)
+        {
+            var board = new ChessBoard();
+
+            board.Board = Board;
+            board.MakeMove(move);
+
+            return board;
+        }
+
         public Piece[,] GetBoardAfterMove(Move move)
         {
             var newBoard = (Piece[,])Board.Clone();
@@ -78,6 +91,48 @@ namespace Chess
             throw new InvalidOperationException("Error no king noob");
         }
 
+        public string GetFenString()
+        {
+            return GetFenString(this);
+        }
+
+        public string GetFenString(ChessBoard board)
+        {
+            string fenString = string.Empty;
+
+            for (int y = 0; y < BoardSize; y++)
+            {
+                int emptyCounter = 0;
+
+                for (int x = 0; x < BoardSize; x++)
+                {
+                    var pieceAtPosition = board.GetPieceAtPosition(x, y);
+
+                    if (pieceAtPosition == null)
+                        emptyCounter++;
+                    else
+                    {
+                        if (emptyCounter > 0)
+                            fenString += emptyCounter;
+
+                        fenString += pieceAtPosition.GetFenRepresentation();
+
+                        emptyCounter = 0;
+                    }
+                }
+
+                if (emptyCounter > 0)
+                {
+                    fenString += emptyCounter;
+                }
+
+                if (y < BoardSize - 1)
+                    fenString += "/";
+            }
+
+            return fenString;
+        }
+
         public void MakeMove(Move move)
         {
             Board = GetBoardAfterMove(move);
@@ -89,12 +144,12 @@ namespace Chess
             return piece.GetLegalMoves(this);
         }
 
-        public bool IsInCheckAfterMove(Color color, Move move)
+        public bool IsInCheckAfterMove(Color color, Move move, ChessBoard board)
         {
-            var boardAfterMove = GetBoardAfterMove(move);
-            var kingPosition = GetKingPosition(color, boardAfterMove);
+            var boardAfterMove = board.GetBoardAfterMove(move);
+            var kingPosition = board.GetKingPosition(color, boardAfterMove);
 
-            var moves = GetAllAvailableMovesWithBoard(InvertColor(color), new ChessBoard {Board = boardAfterMove}, false);
+            var moves = board.GetAllAvailableMovesWithBoard(InvertColor(color), new ChessBoard {Board = boardAfterMove}, false);
 
             return moves.Any(opponentMove => opponentMove.TargetPosition.Equals(kingPosition));
         }
@@ -110,7 +165,7 @@ namespace Chess
             }
 
             if (checkIfCheck)
-                return legalMoves.Where(move => !IsInCheckAfterMove(color, move));
+                return legalMoves.Where(move => !IsInCheckAfterMove(color, move, board));
 
             return legalMoves;
         }
@@ -136,7 +191,7 @@ namespace Chess
             {
                 for (int y = 0; y < BoardSize; y++)
                 {
-                    if (Board[y, x] == piece)
+                    if (Equals(Board[y, x], piece))
                         return new Position(y, x);
                 }
             }
@@ -155,6 +210,11 @@ namespace Chess
                 return null;
 
             return Board[y, x];
+        }
+
+        public IEnumerable<Piece> GetPiecesForColor(Color color)
+        {
+            return Board.Cast<Piece>().Where(piece => piece != null && piece.Color == color).ToList();
         }
     }
 }

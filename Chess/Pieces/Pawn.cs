@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Chess.Pieces
 {
+    [Serializable]
     public class Pawn : Piece
     {
         public Pawn(Color color) : base(color)
@@ -31,14 +33,14 @@ namespace Chess.Pieces
                 moves.Add(new Move
                 {
                     Piece = this,
-                    TargetPosition = new Position(position.X + 1, position.Y + attackingDirection)
+                    TargetPosition = new Position(position.Y + attackingDirection, position.X + 1)
                 });
 
             if (attackPieceLight != null && attackPieceLight.Color != Color)
                 moves.Add(new Move
                 {
                     Piece = this,
-                    TargetPosition = new Position(position.X - 1, position.Y + attackingDirection)
+                    TargetPosition = new Position(position.Y + attackingDirection, position.X - 1)
                 });
 
             return moves;
@@ -48,6 +50,11 @@ namespace Chess.Pieces
         {
             MaxMoveLength = 1;
             base.OnMoved();
+        }
+
+        public override string GetFenRepresentation()
+        {
+            return Color == Color.Black ? "p" : "P";
         }
     }
 }
