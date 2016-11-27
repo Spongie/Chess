@@ -128,7 +128,7 @@ namespace BotVsBotTest
 
             timer = new DispatcherTimer();
             timer.Tick += Timer_Tick;
-            timer.Interval = new TimeSpan(0, 0, 0, 1);
+            timer.Interval = new TimeSpan(0, 0, 0, 0, 500);
             timer.Start();
         }
 

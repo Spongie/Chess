@@ -217,7 +217,7 @@ namespace Chess
             {
                 for (int y = 0; y < BoardSize; y++)
                 {
-                    if (Equals(Board[y, x], piece))
+                    if (Board[y,x] != null && Board[y, x].Equals(piece))
                         return new Position(y, x);
                 }
             }

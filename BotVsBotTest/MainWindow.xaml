@@ -14,8 +14,8 @@
             <ColumnDefinition Width="45*"/>
         </Grid.ColumnDefinitions>
         <StackPanel>
-            <Button Content="Next Move" Click="Button_Click"></Button>
-            <Button Content="Auto Play" Click="Button_Click_1"></Button>
+            <Button Content="Next Move" Click="Button_Click" Margin="5"></Button>
+            <Button Content="Auto Play" Click="Button_Click_1" Margin="5"></Button>
         </StackPanel>
         <ListBox Grid.Column="1" ItemsSource="{Binding Fens}" SelectionChanged="ListBox_SelectionChanged" SelectedItem="{Binding SelectedFen}">
         </ListBox>
