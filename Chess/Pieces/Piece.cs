@@ -6,7 +6,8 @@ namespace Chess.Pieces
     public enum Color
     {
         White = -1,
-        Black = 1
+        Black = 1,
+        Nobody = 99
     }
 
     public enum Directions
@@ -42,6 +43,8 @@ namespace Chess.Pieces
         public abstract IEnumerable<Move> GetLegalMoves(ChessBoard board);
 
         public abstract string GetFenRepresentation();
+
+        public abstract string GetName();
 
         public virtual void OnMoved()
         {

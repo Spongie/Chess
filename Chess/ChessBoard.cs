@@ -15,6 +15,7 @@ namespace Chess
         public ChessBoard()
         {
             Board = new Piece[BoardSize, BoardSize];
+            Winner = new Winner { Color = Color.White, HasWinner = false };
 
             GenerateBlackSide();
             GenerateWhiteSide();
@@ -27,8 +28,8 @@ namespace Chess
             Board[7, 0] = new Rook(Color.White);
             Board[7, 1] = new Knight(Color.White);
             Board[7, 2] = new Bishop(Color.White);
-            Board[7, 3] = new King(Color.White);
-            Board[7, 4] = new Queen(Color.White);
+            Board[7, 3] = new Queen(Color.White);
+            Board[7, 4] = new King(Color.White);
             Board[7, 5] = new Bishop(Color.White);
             Board[7, 6] = new Knight(Color.White);
             Board[7, 7] = new Rook(Color.White);
@@ -44,8 +45,8 @@ namespace Chess
             Board[0, 0] = new Rook(Color.Black);
             Board[0, 1] = new Knight(Color.Black);
             Board[0, 2] = new Bishop(Color.Black);
-            Board[0, 3] = new King(Color.Black);
-            Board[0, 4] = new Queen(Color.Black);
+            Board[0, 3] = new Queen(Color.Black);
+            Board[0, 4] = new King(Color.Black);
             Board[0, 5] = new Bishop(Color.Black);
             Board[0, 6] = new Knight(Color.Black);
             Board[0, 7] = new Rook(Color.Black);
@@ -60,7 +61,7 @@ namespace Chess
         {
             var board = new ChessBoard();
 
-            board.Board = Board;
+            board.Board = (Piece[,]) Board.Clone();
             board.MakeMove(move);
 
             return board;
@@ -70,6 +71,12 @@ namespace Chess
         {
             var newBoard = (Piece[,])Board.Clone();
             var position = GetPiecePosition(move.Piece);
+
+            if (move.Piece is Pawn && move.Piece.Color == Color.White && move.TargetPosition.Y == 0)
+                move.Piece = new Queen(move.Piece.Color);
+
+            if (move.Piece is Pawn && move.Piece.Color == Color.Black && move.TargetPosition.Y == 7)
+                move.Piece = new Queen(move.Piece.Color);
 
             newBoard[position.Y, position.X] = null;
             newBoard[move.TargetPosition.Y, move.TargetPosition.X] = move.Piece;
@@ -135,8 +142,20 @@ namespace Chess
 
         public void MakeMove(Move move)
         {
+            if (Winner.HasWinner)
+                return;
+
             Board = GetBoardAfterMove(move);
             move.Piece.OnMoved();
+
+            var moves = GetAllAvailableMoves(InvertColor(move.Piece.Color));
+
+            if (!moves.Any())
+            {
+                bool draw = IsInCheck(InvertColor(move.Piece.Color));
+
+                Winner = draw ? new Winner { Color = Color.Nobody, HasWinner = true } : new Winner { Color = move.Piece.Color, HasWinner = true };
+            }
         }
 
         public IEnumerable<Move> GetAllAvailableMoves(Piece piece)
@@ -150,6 +169,15 @@ namespace Chess
             var kingPosition = board.GetKingPosition(color, boardAfterMove);
 
             var moves = board.GetAllAvailableMovesWithBoard(InvertColor(color), new ChessBoard {Board = boardAfterMove}, false);
+
+            return moves.Any(opponentMove => opponentMove.TargetPosition.Equals(kingPosition));
+        }
+
+        public  bool IsInCheck(Color color)
+        {
+            var kingPosition = GetKingPosition(color);
+
+            var moves = GetAllAvailableMoves(InvertColor(color));
 
             return moves.Any(opponentMove => opponentMove.TargetPosition.Equals(kingPosition));
         }
@@ -216,5 +244,60 @@ namespace Chess
         {
             return Board.Cast<Piece>().Where(piece => piece != null && piece.Color == color).ToList();
         }
+
+        public static ChessBoard CreateFromFenString(string selectedFen)
+        {
+            var board = new ChessBoard();
+
+            var rows = selectedFen.Split('/');
+
+            int y = 0;
+            
+            foreach (var row in rows)
+            {
+                int x = 0;
+
+                foreach (var character in row.ToCharArray())
+                {
+                    int value;
+                    if (!int.TryParse(character.ToString(), out value))
+                    {
+                        Color color = char.IsUpper(character) ? Color.White : Color.Black;
+
+                        var pieceString = character.ToString().ToUpper();
+
+                        if (pieceString == "B")
+                            board.Board[y, x] = new Bishop(color);
+                        if (pieceString == "K")
+                            board.Board[y, x] = new King(color);
+                        if (pieceString == "N")
+                            board.Board[y, x] = new Knight(color);
+                        if (pieceString == "P")
+                            board.Board[y, x] = new Pawn(color);
+                        if (pieceString == "Q")
+                            board.Board[y, x] = new Queen(color);
+                        if (pieceString == "R")
+                            board.Board[y, x] = new Rook(color);
+
+                        x++;
+                    }
+                    else
+                    {
+                        for (int val = 0; val < value; val++)
+                        {
+                            board.Board[y, x] = null;
+                            x++;
+                        }
+                        
+                    }
+                }
+
+                y++;
+            }
+
+            return board;
+        }
+
+        public Winner Winner { get; set; }
     }
 }

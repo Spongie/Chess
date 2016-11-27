@@ -1,0 +1,30 @@
+﻿<Window x:Class="BotVsBotTest.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BotVsBotTest"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="640" Width="1000">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="30*"/>
+            <ColumnDefinition Width="15*"/>
+            <ColumnDefinition Width="45*"/>
+        </Grid.ColumnDefinitions>
+        <StackPanel>
+            <Button Content="Next Move" Click="Button_Click"></Button>
+            <Button Content="Auto Play" Click="Button_Click_1"></Button>
+        </StackPanel>
+        <ListBox Grid.Column="1" ItemsSource="{Binding Fens}" SelectionChanged="ListBox_SelectionChanged" SelectedItem="{Binding SelectedFen}">
+        </ListBox>
+        <ListBox Grid.Column="2" ItemsSource="{Binding Moves}">
+        </ListBox>
+        <Grid Grid.Column="3">
+            <Canvas x:Name="boardCanvas" SizeChanged="Canvas_SizeChanged">
+                
+            </Canvas>
+        </Grid>
+    </Grid>
+</Window>

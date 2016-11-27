@@ -26,5 +26,9 @@ namespace Chess.Pieces
         {
             return Color == Color.Black ? "r" : "R";
         }
+        public override string GetName()
+        {
+            return "Rook";
+        }
     }
 }

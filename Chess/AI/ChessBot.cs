@@ -35,9 +35,9 @@ namespace Chess.AI
 
                 rootNodes.Add(node);
 
-                if (node.Children == null)
+                if (node.Children == null || !node.Children.Any())
                 {
-                    var cacheKey = new EvalCacheKey(board.GetFenString(), color);
+                    var cacheKey = new EvalCacheKey(board.CopyWithMove(node.Move).GetFenString(), color);
 
                     if (boardEvalCache.ContainsKey(cacheKey))
                         node.Score = boardEvalCache[cacheKey];
@@ -48,9 +48,16 @@ namespace Chess.AI
                         node.Score = score;
                     }
                 }
+                else
+                {
+                    node.Score = node.GetBestChild();
+                }
             });
 
             var random = new Random();
+
+            if (!rootNodes.Any())
+                return null;
 
             return rootNodes.OrderByDescending(node => node.Score).ThenBy(node => random.Next()).First().Move;
         }
@@ -85,13 +92,15 @@ namespace Chess.AI
                         Children = null
                     };
 
-                    cacheKey = new EvalCacheKey(board.GetFenString(), color);
+                    var boardCopy = board.CopyWithMove(move);
+
+                    cacheKey = new EvalCacheKey(boardCopy.GetFenString(), color);
 
                     if (boardEvalCache.ContainsKey(cacheKey))
                         node.Score = boardEvalCache[cacheKey];
                     else
                     {
-                        var score = boardEvaluator.EvaluateBoard(board.CopyWithMove(move), color);
+                        var score = boardEvaluator.EvaluateBoard(boardCopy, color);
 
                         if (!boardEvalCache.ContainsKey(cacheKey))
                             boardEvalCache.TryAdd(cacheKey, score);

@@ -56,5 +56,10 @@ namespace Chess.Pieces
         {
             return Color == Color.Black ? "p" : "P";
         }
+
+        public override string GetName()
+        {
+            return "Pawn";
+        }
     }
 }

@@ -34,6 +34,39 @@ namespace ChessTests
         }
 
         [TestMethod]
+        public void InCheckWhiteIllegalMoveBot()
+        {
+            var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 3);
+
+            var c = new ChessBoard();
+            var board = new Piece[8, 8];
+
+            board[0, 2] = new King(Color.Black);
+            board[0, 4] = new Rook(Color.Black);
+            board[1, 6] = new Knight(Color.Black);
+            board[2, 6] = new Pawn(Color.Black);
+            board[2, 7] = new Pawn(Color.Black);
+            board[3, 0] = new Pawn(Color.Black);
+            board[5, 1] = new Bishop(Color.Black);
+
+            board[2, 2] = new Bishop(Color.White);
+            board[3, 1] = new Knight(Color.White);
+            board[4, 0] = new Pawn(Color.White);
+            board[4, 1] = new Pawn(Color.White);
+            board[4, 3] = new Pawn(Color.White);
+            board[5, 4] = new King(Color.White);
+            board[5, 6] = new Pawn(Color.White);
+            board[6, 3] = new Bishop(Color.White);
+
+            c.Board = board;
+
+            var allMoves = c.GetAllAvailableMoves(Color.White);
+            bot.FindMoveForColor(Color.White, c);
+
+            Assert.AreEqual(6, allMoves.Count());
+        }
+
+        [TestMethod]
         public void Depth_2_Performance()
         {
             var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 2);
@@ -57,40 +90,40 @@ namespace ChessTests
             Assert.IsTrue(true);
         }
 
-        [TestMethod]
-        public void Depth_4_Performance()
-        {
-            var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 4);
+        //[TestMethod]
+        //public void Depth_4_Performance()
+        //{
+        //    var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 4);
 
-            var board = new ChessBoard();
+        //    var board = new ChessBoard();
 
-            var botMove = bot.FindMoveForColor(Color.White, board);
+        //    var botMove = bot.FindMoveForColor(Color.White, board);
 
-            Assert.IsTrue(true);
-        }
+        //    Assert.IsTrue(true);
+        //}
 
-        [TestMethod]
-        public void Depth_5_Performance()
-        {
-            var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 5);
+        //[TestMethod]
+        //public void Depth_5_Performance()
+        //{
+        //    var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 5);
 
-            var board = new ChessBoard();
+        //    var board = new ChessBoard();
 
-            var botMove = bot.FindMoveForColor(Color.White, board);
+        //    var botMove = bot.FindMoveForColor(Color.White, board);
 
-            Assert.IsTrue(true);
-        }
+        //    Assert.IsTrue(true);
+        //}
 
-        [TestMethod]
-        public void Depth_6_Performance()
-        {
-            var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 6);
+        //[TestMethod]
+        //public void Depth_6_Performance()
+        //{
+        //    var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 6);
 
-            var board = new ChessBoard();
+        //    var board = new ChessBoard();
 
-            var botMove = bot.FindMoveForColor(Color.White, board);
+        //    var botMove = bot.FindMoveForColor(Color.White, board);
 
-            Assert.IsTrue(true);
-        }
+        //    Assert.IsTrue(true);
+        //}
     }
 }
