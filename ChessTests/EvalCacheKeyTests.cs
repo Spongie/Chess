@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Chess;
+﻿using Chess;
 using Chess.AI;
 using Chess.Pieces;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

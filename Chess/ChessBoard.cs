@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using Chess.Pieces;
 
 namespace Chess
@@ -152,7 +150,7 @@ namespace Chess
 
             if (!moves.Any())
             {
-                bool draw = IsInCheck(InvertColor(move.Piece.Color));
+                bool draw = !IsInCheck(InvertColor(move.Piece.Color));
 
                 Winner = draw ? new Winner { Color = Color.Nobody, HasWinner = true } : new Winner { Color = move.Piece.Color, HasWinner = true };
             }
