@@ -4,6 +4,8 @@ namespace Chess.AI
 {
     public interface IBoardEvaluator
     {
+        string Name { get; set; }
+
         float EvaluateBoard(ChessBoard board, Color color);
     }
 }

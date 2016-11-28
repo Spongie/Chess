@@ -12,7 +12,7 @@ namespace ChessTests
         [TestMethod]
         public void MoveIsChosen()
         {
-            var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 1);
+            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 1);
 
             var board = new ChessBoard();
 
@@ -32,7 +32,7 @@ namespace ChessTests
         [TestMethod]
         public void InCheckWhiteIllegalMoveBot()
         {
-            var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 3);
+            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 3);
 
             var c = new ChessBoard();
             var board = new Piece[8, 8];
@@ -65,7 +65,7 @@ namespace ChessTests
         [TestMethod]
         public void Depth_2_Performance()
         {
-            var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 2);
+            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 2);
 
             var board = new ChessBoard();
 
@@ -77,7 +77,7 @@ namespace ChessTests
         [TestMethod]
         public void Depth_3_Performance()
         {
-            var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 3);
+            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 3);
 
             var board = new ChessBoard();
 
@@ -89,7 +89,7 @@ namespace ChessTests
         //[TestMethod]
         //public void Depth_4_Performance()
         //{
-        //    var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 4);
+        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 4);
 
         //    var board = new ChessBoard();
 
@@ -101,7 +101,7 @@ namespace ChessTests
         //[TestMethod]
         //public void Depth_5_Performance()
         //{
-        //    var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 5);
+        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 5);
 
         //    var board = new ChessBoard();
 
@@ -113,7 +113,7 @@ namespace ChessTests
         //[TestMethod]
         //public void Depth_6_Performance()
         //{
-        //    var bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 6);
+        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 6);
 
         //    var board = new ChessBoard();
 

@@ -27,7 +27,7 @@ namespace Chess.AI
 
             Parallel.ForEach(baseMoves, baseMove =>
             {
-                rootNodes.Add(CreateRootMoveNode(color, board, baseMove));
+                rootNodes.Add(CreateRootMoveNode(color, board.DeepClone(), baseMove));
             });
 
             var random = new Random();

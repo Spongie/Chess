@@ -167,6 +167,8 @@ namespace ChessTests
             board[0, 3] = new King(Color.Black);
             board[1, 3] = new Pawn(Color.Black);
 
+            board[7,7] = new King(Color.White);
+
             c.Board = board;
 
             c.MakeMove(new Move {Piece = board[1, 3], TargetPosition = new Position(2, 3)});

@@ -142,5 +142,22 @@ namespace BotVsBotTest
         {
             Button_Click(this, new RoutedEventArgs());
         }
+
+        private void MenuItem_OnClick(object sender, RoutedEventArgs e)
+        {
+            var newDialog = new ValueByPieceCreatorWindow();
+
+            newDialog.ShowDialog();
+        }
+
+        private void buttonClick_CommitBlack(object sender, RoutedEventArgs e)
+        {
+            viewModel.CommitBlackBot();
+        }
+
+        private void buttonClick_CommitWhite(object sender, RoutedEventArgs e)
+        {
+            viewModel.CommitWhiteBot();
+        }
     }
 }

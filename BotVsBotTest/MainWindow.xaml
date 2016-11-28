@@ -6,25 +6,54 @@
         xmlns:local="clr-namespace:BotVsBotTest"
         mc:Ignorable="d"
         Title="MainWindow" Height="640" Width="1000">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="10*"/>
-            <ColumnDefinition Width="30*"/>
-            <ColumnDefinition Width="15*"/>
-            <ColumnDefinition Width="45*"/>
-        </Grid.ColumnDefinitions>
-        <StackPanel>
-            <Button Content="Next Move" Click="Button_Click" Margin="5"></Button>
-            <Button Content="Auto Play" Click="Button_Click_1" Margin="5"></Button>
-        </StackPanel>
-        <ListBox Grid.Column="1" ItemsSource="{Binding Fens}" SelectionChanged="ListBox_SelectionChanged" SelectedItem="{Binding SelectedFen}">
-        </ListBox>
-        <ListBox Grid.Column="2" ItemsSource="{Binding Moves}">
-        </ListBox>
-        <Grid Grid.Column="3">
-            <Canvas x:Name="boardCanvas" SizeChanged="Canvas_SizeChanged">
-                
-            </Canvas>
+    <DockPanel>
+        <Menu Width="Auto" Height="20" DockPanel.Dock="Top">
+            <MenuItem Header="Bots">
+                <MenuItem Header="New Simple Piece Evaluator" Click="MenuItem_OnClick"/>
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50*"/>
+                <RowDefinition Height="50*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="30*"/>
+                <ColumnDefinition Width="15*"/>
+                <ColumnDefinition Width="45*"/>
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.RowSpan="2">
+                <Button Content="Next Move" Click="Button_Click" Margin="5"></Button>
+                <Button Content="Auto Play" Click="Button_Click_1" Margin="5"></Button>
+            </StackPanel>
+            <StackPanel Grid.Row="0" Grid.Column="1">
+                <Label Content="White Bot" />
+                <ComboBox ItemsSource="{Binding AvailableBots}" SelectedItem="{Binding SelectedWhiteBot}"/>
+                <Label Content="Depth" />
+                <TextBox Text="{Binding WhiteDepth}" />
+                <Button Content="Commit" Click="buttonClick_CommitWhite"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Grid.Column="1">
+                <Label Content="Black Bot" />
+                <ComboBox ItemsSource="{Binding AvailableBots}" SelectedItem="{Binding SelectedBlackBot}"/>
+                <Label Content="Depth" />
+                <TextBox Text="{Binding BlackDepth}" />
+                <Button Content="Commit" Click="buttonClick_CommitBlack"/>
+            </StackPanel>
+            <DockPanel LastChildFill="True" Grid.Row="0" Grid.Column="2">
+                <Label Content="FEN History" DockPanel.Dock="Top"/>
+                <ListBox DockPanel.Dock="Top" ItemsSource="{Binding Fens}" SelectionChanged="ListBox_SelectionChanged" SelectedItem="{Binding SelectedFen}"/>
+            </DockPanel>
+            <DockPanel LastChildFill="True" Grid.Column="2" Grid.Row="1">
+                <Label Content="Moves" DockPanel.Dock="Top"/>
+                <ListBox DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemsSource="{Binding Moves}"/>
+            </DockPanel>
+            <Grid Grid.Column="3" Grid.RowSpan="2">
+                <Canvas x:Name="boardCanvas" SizeChanged="Canvas_SizeChanged">
+
+                </Canvas>
+            </Grid>
         </Grid>
-    </Grid>
+    </DockPanel>
 </Window>

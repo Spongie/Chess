@@ -16,16 +16,42 @@ namespace BotVsBotTest
         private ObservableCollection<string> fens;
         private ChessBoard board;
         private string selectedFen;
+        private ObservableCollection<AvailableBot> availableBots;
+        private AvailableBot selectedWhiteBot;
+        private AvailableBot selectedBlackBot;
+        private int whiteDepth;
+        private int blackDepth;
 
         public ViewModel()
         {
             Moves = new ObservableCollection<Move>();
             Board = new ChessBoard();
-            Bot = new ChessBot(new OnlyPiecesMatterEvaluator(), 3);
             NextColor = Color.White;
             Fens = new ObservableCollection<string>();
             Fens.Add(Board.GetFenString());
             SelectedFen = Fens.Last();
+
+            blackDepth = 3;
+            whiteDepth = 3;
+
+            availableBots = new ObservableCollection<AvailableBot>();
+
+            foreach (var boardEvaluator in ConfigManager.LoadAllBots())
+            {
+                var bot = new AvailableBot()
+                {
+                    Name = boardEvaluator.Name,
+                    BoardEvaluator = boardEvaluator
+                };
+
+                availableBots.Add(bot);
+            }
+
+            SelectedWhiteBot = availableBots[0];
+            SelectedBlackBot = availableBots[0];
+
+            WhiteBot = new ChessBot(selectedWhiteBot.BoardEvaluator, whiteDepth);
+            BlackBot = new ChessBot(selectedBlackBot.BoardEvaluator, blackDepth);
         }
 
         public ObservableCollection<Move> Moves
@@ -47,8 +73,6 @@ namespace BotVsBotTest
                 OnPropertyChanged();
             }
         }
-
-        public ChessBot Bot { get; set; }
 
         public Color NextColor { get; set; }
 
@@ -72,6 +96,69 @@ namespace BotVsBotTest
             }
         }
 
+        public ObservableCollection<AvailableBot> AvailableBots
+        {
+            get { return availableBots; }
+            set
+            {
+                availableBots = value; 
+                OnPropertyChanged();
+            }
+        }
+
+        public AvailableBot SelectedWhiteBot
+        {
+            get { return selectedWhiteBot; }
+            set
+            {
+                selectedWhiteBot = value; 
+                OnPropertyChanged();
+            }
+        }
+
+        public AvailableBot SelectedBlackBot
+        {
+            get { return selectedBlackBot; }
+            set
+            {
+                selectedBlackBot = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int WhiteDepth
+        {
+            get { return whiteDepth; }
+            set
+            {
+                whiteDepth = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int BlackDepth
+        {
+            get { return blackDepth; }
+            set
+            {
+                blackDepth = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public ChessBot WhiteBot { get; set; }
+        public ChessBot BlackBot { get; set; }
+
+        public void CommitWhiteBot()
+        {
+            WhiteBot = new ChessBot(SelectedWhiteBot.BoardEvaluator, whiteDepth);
+        }
+
+        public void CommitBlackBot()
+        {
+            BlackBot = new ChessBot(selectedBlackBot.BoardEvaluator, blackDepth);
+        }
+
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -79,7 +166,9 @@ namespace BotVsBotTest
 
         public void MakeMove()
         {
-            var move = Bot.FindMoveForColor(NextColor, Board);
+            var bot = NextColor == Color.White ? WhiteBot : BlackBot;
+
+            var move = bot.FindMoveForColor(NextColor, Board);
             Board.MakeMove(move);
             Moves.Add(move);
             Fens.Add(Board.GetFenString());
