@@ -27,39 +27,7 @@ namespace Chess.AI
 
             Parallel.ForEach(baseMoves, baseMove =>
             {
-                var node = new MoveNode
-                {
-                    Move = baseMove
-                };
-
-                var cacheKey = new EvalCacheKey(board.CopyWithMove(node.Move).GetFenString(), color);
-
-                if (boardEvalCache.ContainsKey(cacheKey))
-                    node.Score = boardEvalCache[cacheKey];
-                else
-                {
-                    node.Children = BuildMoveTreeForColor(ChessBoard.InvertColor(color), color,board.CopyWithMove(baseMove), 2);
-                }
-
-                rootNodes.Add(node);
-
-                if (node.Children == null || !node.Children.Any())
-                {
-                    cacheKey = new EvalCacheKey(board.CopyWithMove(node.Move).GetFenString(), color);
-
-                    if (boardEvalCache.ContainsKey(cacheKey))
-                        node.Score = boardEvalCache[cacheKey];
-                    else
-                    {
-                        float score = boardEvaluator.EvaluateBoard(board.CopyWithMove(node.Move), color);
-                        boardEvalCache.TryAdd(cacheKey, score);
-                        node.Score = score;
-                    }
-                }
-                else
-                {
-                    node.Score = node.GetBestChild();
-                }
+                rootNodes.Add(CreateRootMoveNode(color, board, baseMove));
             });
 
             var random = new Random();
@@ -68,6 +36,43 @@ namespace Chess.AI
                 return null;
 
             return rootNodes.OrderByDescending(node => node.Score).ThenBy(node => random.Next()).First().Move;
+        }
+
+        private MoveNode CreateRootMoveNode(Color color, ChessBoard board, Move baseMove)
+        {
+            var node = new MoveNode
+            {
+                Move = baseMove
+            };
+
+            var cacheKey = new EvalCacheKey(board.CopyWithMove(node.Move).GetFenString(), color);
+
+            if (boardEvalCache.ContainsKey(cacheKey))
+                node.Score = boardEvalCache[cacheKey];
+            else
+            {
+                node.Children = BuildMoveTreeForColor(ChessBoard.InvertColor(color), color, board.CopyWithMove(baseMove), 2);
+            }
+
+            if (node.Children == null || !node.Children.Any())
+            {
+                cacheKey = new EvalCacheKey(board.CopyWithMove(node.Move).GetFenString(), color);
+
+                if (boardEvalCache.ContainsKey(cacheKey))
+                    node.Score = boardEvalCache[cacheKey];
+                else
+                {
+                    float score = boardEvaluator.EvaluateBoard(board.CopyWithMove(node.Move), color);
+                    boardEvalCache.TryAdd(cacheKey, score);
+                    node.Score = score;
+                }
+            }
+            else
+            {
+                node.Score = node.GetBestChild();
+            }
+
+            return node;
         }
 
         private List<MoveNode> BuildMoveTreeForColor(Color color, Color originalColor, ChessBoard board, int currentLevel)
@@ -95,27 +100,7 @@ namespace Chess.AI
 
                 if (currentLevel == maxDepth)
                 {
-                    var node = new MoveNode
-                    {
-                        Children = null
-                    };
-
-                    var boardCopy = board.CopyWithMove(move);
-
-                    cacheKey = new EvalCacheKey(boardCopy.GetFenString(), color);
-
-                    if (boardEvalCache.ContainsKey(cacheKey))
-                        node.Score = boardEvalCache[cacheKey];
-                    else
-                    {
-                        var score = boardEvaluator.EvaluateBoard(boardCopy, color);
-
-                        if (!boardEvalCache.ContainsKey(cacheKey))
-                            boardEvalCache.TryAdd(cacheKey, score);
-
-                        node.Score = score;
-
-                    }
+                    var node = GetMoveNodeMaxDepth(color, board, move);
 
                     nodes.Add(node);
                 }
@@ -154,6 +139,31 @@ namespace Chess.AI
             }
 
             return nodes;
+        }
+
+        private MoveNode GetMoveNodeMaxDepth(Color color, ChessBoard board, Move move)
+        {
+            var node = new MoveNode
+            {
+                Children = null
+            };
+
+            var boardCopy = board.CopyWithMove(move);
+
+            var cacheKey = new EvalCacheKey(boardCopy.GetFenString(), color);
+
+            if (boardEvalCache.ContainsKey(cacheKey))
+                node.Score = boardEvalCache[cacheKey];
+            else
+            {
+                var score = boardEvaluator.EvaluateBoard(boardCopy, color);
+
+                if (!boardEvalCache.ContainsKey(cacheKey))
+                    boardEvalCache.TryAdd(cacheKey, score);
+
+                node.Score = score;
+            }
+            return node;
         }
     }
 }
