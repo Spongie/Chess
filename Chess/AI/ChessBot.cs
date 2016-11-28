@@ -29,15 +29,23 @@ namespace Chess.AI
             {
                 var node = new MoveNode
                 {
-                    Children = BuildMoveTreeForColor(ChessBoard.InvertColor(color), color, board.CopyWithMove(baseMove), 2),
                     Move = baseMove
                 };
+
+                var cacheKey = new EvalCacheKey(board.CopyWithMove(node.Move).GetFenString(), color);
+
+                if (boardEvalCache.ContainsKey(cacheKey))
+                    node.Score = boardEvalCache[cacheKey];
+                else
+                {
+                    node.Children = BuildMoveTreeForColor(ChessBoard.InvertColor(color), color,board.CopyWithMove(baseMove), 2);
+                }
 
                 rootNodes.Add(node);
 
                 if (node.Children == null || !node.Children.Any())
                 {
-                    var cacheKey = new EvalCacheKey(board.CopyWithMove(node.Move).GetFenString(), color);
+                    cacheKey = new EvalCacheKey(board.CopyWithMove(node.Move).GetFenString(), color);
 
                     if (boardEvalCache.ContainsKey(cacheKey))
                         node.Score = boardEvalCache[cacheKey];
