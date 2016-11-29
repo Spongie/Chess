@@ -47,7 +47,7 @@ namespace Chess.AI
 
             Parallel.ForEach(baseMoves, baseMove =>
             {
-                rootNodes.Add(CreateRootMoveNode(Color, board.DeepClone(), baseMove));
+                rootNodes.Add(CreateRootMoveNode(Color, board.JsonCopy(), baseMove));
             });
 
             var random = new Random();
@@ -106,13 +106,11 @@ namespace Chess.AI
 
             var nodes = new List<MoveNode>();
 
-            foreach (var move in board.GetAllAvailableMoves(color))
-            {
-                var cacheKey = new EvalCacheKey(board.GetFenString(), color);
+            var cacheKey = new EvalCacheKey(board.GetFenString(), color);
 
-                if (boardEvalCache.ContainsKey(cacheKey))
-                {
-                    return new List<MoveNode>
+            if (boardEvalCache.ContainsKey(cacheKey))
+            {
+                return new List<MoveNode>
                     {
                         new MoveNode
                         {
@@ -120,8 +118,10 @@ namespace Chess.AI
                             Children = null
                         }
                     };
-                }
+            }
 
+            foreach (var move in board.GetAllAvailableMoves(color))
+            {
                 if (currentLevel == maxDepth)
                 {
                     var node = GetMoveNodeMaxDepth(color, board, move);
@@ -130,7 +130,7 @@ namespace Chess.AI
                 }
                 else
                 {
-                    var chessBoard = board.DeepClone();
+                    var chessBoard = board.JsonCopy();
 
                     chessBoard.Board = chessBoard.GetBoardAfterMove(move);
 

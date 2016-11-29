@@ -86,6 +86,18 @@ namespace ChessTests
             Assert.IsTrue(true);
         }
 
+        [TestMethod]
+        public void Depth_4_Performance()
+        {
+            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 4, Color.White, true);
+
+            var board = new ChessBoard();
+
+            var botMove = bot.FindMove(board);
+
+            Assert.IsTrue(true);
+        }
+
 
         [TestMethod]
         public void PawnAtEndBecomesQueen_BotHandlesIt()
@@ -111,17 +123,17 @@ namespace ChessTests
         //    Assert.IsTrue(true);
         //}
 
-        //[TestMethod]
-        //public void Depth_5_Performance()
-        //{
-        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 5, true);
+        [TestMethod]
+        public void Depth_5_Performance()
+        {
+            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 5, Color.White, true);
 
-        //    var board = new ChessBoard();
+            var board = new ChessBoard();
 
-        //    var botMove = bot.FindMove(Color.White, board);
+            var botMove = bot.FindMove(board);
 
-        //    Assert.IsTrue(true);
-        //}
+            Assert.IsTrue(true);
+        }
 
         //[TestMethod]
         //public void Depth_6_Performance()

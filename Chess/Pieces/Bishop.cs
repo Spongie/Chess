@@ -6,6 +6,11 @@ namespace Chess.Pieces
     [Serializable]
     public class Bishop : Piece
     {
+        public Bishop()
+        {
+            
+        }
+
         public Bishop(Color color) : base(color)
         {
             MaxMoveLength = 7;

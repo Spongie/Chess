@@ -6,6 +6,11 @@ namespace Chess.Pieces
     [Serializable]
     public class Rook : Piece
     {
+        public Rook()
+        {
+            
+        }
+
         public Rook(Color color) : base(color)
         {
             MaxMoveLength = 7;

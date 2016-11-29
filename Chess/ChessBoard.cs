@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Chess.Pieces;
+using Newtonsoft.Json;
 
 namespace Chess
 {
@@ -250,6 +251,17 @@ namespace Chess
             }
 
             throw new ArgumentOutOfRangeException(nameof(piece), piece, "Piece not found on board");
+        }
+
+        public ChessBoard JsonCopy()
+        {
+            var deserializeSettings = new JsonSerializerSettings
+            {
+                ObjectCreationHandling = ObjectCreationHandling.Replace,
+                TypeNameHandling = TypeNameHandling.All
+            };
+
+            return JsonConvert.DeserializeObject<ChessBoard>(JsonConvert.SerializeObject(this, deserializeSettings), deserializeSettings);
         }
 
         public bool IsPositionInsideBoard(int x, int y)

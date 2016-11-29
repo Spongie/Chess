@@ -6,6 +6,11 @@ namespace Chess.Pieces
     [Serializable]
     public class Pawn : Piece
     {
+        public Pawn()
+        {
+            
+        }
+
         public Pawn(Color color) : base(color)
         {
             MaxMoveLength = 2;

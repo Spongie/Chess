@@ -23,8 +23,13 @@ namespace Chess.Pieces
     }
 
     [Serializable]
-    public abstract class Piece
+    public class Piece
     {
+        public Piece()
+        {
+            
+        }
+
         protected Piece(Color color) : this(color, Guid.NewGuid())
         {
             
@@ -37,19 +42,28 @@ namespace Chess.Pieces
             Id = id;
         }
 
-        public Color Color { get; protected set; }
+        public Color Color { get; set; }
 
-        public int MaxMoveLength { get; protected set; }
+        public int MaxMoveLength { get; set; }
 
-        public int AmountOfMoves { get; protected set; }
+        public int AmountOfMoves { get; set; }
 
-        public Guid Id { get; }
+        public Guid Id { get; set; }
 
-        public abstract IEnumerable<Move> GetLegalMoves(ChessBoard board);
+        public virtual IEnumerable<Move> GetLegalMoves(ChessBoard board)
+        {
+            return new List<Move>();
+        }
 
-        public abstract string GetFenRepresentation();
+        public virtual string GetFenRepresentation()
+        {
+            return string.Empty;
+        }
 
-        public abstract string GetName();
+        public virtual string GetName()
+        {
+            return string.Empty;
+        }
 
         public virtual void OnMoved()
         {
