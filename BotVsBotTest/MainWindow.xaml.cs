@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
 using Chess;
+using Chess.Pieces;
 using Brush = System.Windows.Media.Brush;
 using Brushes = System.Windows.Media.Brushes;
 using Rectangle = System.Windows.Shapes.Rectangle;
@@ -17,6 +18,9 @@ namespace BotVsBotTest
     {
         private ViewModel viewModel;
         private DispatcherTimer timer;
+        private Image selectedImage;
+        private int startXIndex;
+        private int startYIndex;
 
         public MainWindow()
         {
@@ -42,7 +46,7 @@ namespace BotVsBotTest
                 return;
             }
 
-            viewModel.MakeMove();
+            viewModel.MakeBotMove();
             DrawChessBoard(boardCanvas.RenderSize);
 
             if (viewModel.Board.Winner.HasWinner)
@@ -158,6 +162,77 @@ namespace BotVsBotTest
         private void buttonClick_CommitWhite(object sender, RoutedEventArgs e)
         {
             viewModel.CommitWhiteBot();
+        }
+
+        private void MenuItem_WhiteMove_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.NextColor = Color.White;
+        }
+
+        private void MenuItem_BlackMove_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.NextColor = Color.White;
+        }
+
+        private void MenuItem_SetBoard_Click(object sender, RoutedEventArgs e)
+        {
+            new BoardStateInput(viewModel).ShowDialog();
+            DrawChessBoard(boardCanvas.RenderSize);
+        }
+
+        private void boardCanvas_MouseLeftButtonDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            Image selected = null;
+
+            foreach (var child in boardCanvas.Children)
+            {
+                var img = child as Image;
+
+                if (img == null)
+                    continue;
+
+                if (img.IsMouseOver)
+                {
+                    selected = img;
+                    break;
+                }
+            }
+
+            if (selected == null)
+                return;
+
+            selectedImage = selected;
+
+            int widthPerPiece = (int)(boardCanvas.RenderSize.Width / 8);
+            int heightPerPiece = (int)(boardCanvas.RenderSize.Height / 8);
+
+            startXIndex = (int)(e.GetPosition(boardCanvas).X / widthPerPiece);
+            startYIndex = (int)(e.GetPosition(boardCanvas).Y / heightPerPiece);
+        }
+
+        private void boardCanvas_MouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            int widthPerPiece = (int)(boardCanvas.RenderSize.Width / 8);
+            int heightPerPiece = (int)(boardCanvas.RenderSize.Height / 8);
+
+            int dropXIndex = (int) (e.GetPosition(boardCanvas).X / widthPerPiece);
+            int dropYIndex = (int)(e.GetPosition(boardCanvas).Y / heightPerPiece);
+
+            viewModel.MakeDragMove(startXIndex, startYIndex, dropXIndex, dropYIndex);
+
+            selectedImage = null;
+        }
+
+        private void boardCanvas_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            if (selectedImage != null)
+            {
+                int widthPerPiece = (int)(boardCanvas.RenderSize.Width / 8);
+                int heightPerPiece = (int)(boardCanvas.RenderSize.Height / 8);
+
+                Canvas.SetTop(selectedImage, e.GetPosition(boardCanvas).Y - (heightPerPiece / 2));
+                Canvas.SetLeft(selectedImage, e.GetPosition(boardCanvas).X - (widthPerPiece / 2));
+            }
         }
     }
 }

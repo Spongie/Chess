@@ -57,11 +57,18 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="AvailableBot.cs" />
+    <Compile Include="BoardStateInput.xaml.cs">
+      <DependentUpon>BoardStateInput.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ValueByPieceCreatorWindow.xaml.cs">
       <DependentUpon>ValueByPieceCreatorWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="ValueByPieceViewModel.cs" />
     <Compile Include="ViewModel.cs" />
+    <Page Include="BoardStateInput.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

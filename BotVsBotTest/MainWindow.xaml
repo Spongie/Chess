@@ -8,6 +8,11 @@
         Title="MainWindow" Height="640" Width="1000">
     <DockPanel>
         <Menu Width="Auto" Height="20" DockPanel.Dock="Top">
+            <MenuItem Header="Edit">
+                <MenuItem Header="Set White to move" Click="MenuItem_WhiteMove_Click" />
+                <MenuItem Header="Set Black to move" Click="MenuItem_BlackMove_Click" />
+                <MenuItem Header="Set board positio" Click="MenuItem_SetBoard_Click"/>
+            </MenuItem>
             <MenuItem Header="Bots">
                 <MenuItem Header="New Simple Piece Evaluator" Click="MenuItem_OnClick"/>
             </MenuItem>
@@ -50,7 +55,7 @@
                 <ListBox DockPanel.Dock="Top" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ItemsSource="{Binding Moves}"/>
             </DockPanel>
             <Grid Grid.Column="3" Grid.RowSpan="2">
-                <Canvas x:Name="boardCanvas" SizeChanged="Canvas_SizeChanged">
+                <Canvas x:Name="boardCanvas" SizeChanged="Canvas_SizeChanged" MouseLeftButtonDown="boardCanvas_MouseLeftButtonDown" MouseLeftButtonUp="boardCanvas_MouseLeftButtonUp" MouseMove="boardCanvas_MouseMove">
 
                 </Canvas>
             </Grid>

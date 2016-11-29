@@ -250,13 +250,20 @@ namespace Chess
             var rows = selectedFen.Split('/');
 
             int y = 0;
-            
+            bool finished = false;
+
             foreach (var row in rows)
             {
                 int x = 0;
 
                 foreach (var character in row.ToCharArray())
                 {
+                    if (character == ' ')
+                    {
+                        finished = true;
+                        break;
+                    }
+
                     int value;
                     if (!int.TryParse(character.ToString(), out value))
                     {
@@ -289,6 +296,9 @@ namespace Chess
                         
                     }
                 }
+
+                if (finished)
+                    break;
 
                 y++;
             }

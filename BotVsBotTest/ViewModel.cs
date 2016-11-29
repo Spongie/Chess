@@ -36,6 +36,12 @@ namespace BotVsBotTest
 
             availableBots = new ObservableCollection<AvailableBot>();
 
+            availableBots.Add(new AvailableBot()
+            {
+                Name = "Player",
+                BoardEvaluator = null
+            });
+
             foreach (var boardEvaluator in ConfigManager.LoadAllBots())
             {
                 var bot = new AvailableBot()
@@ -164,16 +170,47 @@ namespace BotVsBotTest
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public void MakeMove()
+        public void MakeBotMove()
         {
             var bot = NextColor == Color.White ? WhiteBot : BlackBot;
 
             var move = bot.FindMoveForColor(NextColor, Board);
+            MakeMove(move);
+        }
+
+        private void MakeMove(Move move)
+        {
             Board.MakeMove(move);
             Moves.Add(move);
             Fens.Add(Board.GetFenString());
             NextColor = ChessBoard.InvertColor(NextColor);
             SelectedFen = Fens.Last();
+        }
+
+        public void AddFen(string text)
+        {
+            Fens.Add(text);
+            SelectedFen = text;
+        }
+
+        public void MakeDragMove(int startXIndex, int startYIndex, int dropXIndex, int dropYIndex)
+        {
+            var move = new Move
+            {
+                Piece = Board.GetPieceAtPosition(startXIndex, startYIndex),
+                TargetPosition = new Position(dropYIndex, dropXIndex)
+            };
+
+            MakeMove(move);
+
+            if (NextColor == Color.White && selectedBlackBot.Name == "Player")
+            {
+                MakeBotMove();
+            }
+            if (NextColor == Color.Black && selectedWhiteBot.Name == "Player")
+            {
+                MakeBotMove();
+            }
         }
     }
 }
