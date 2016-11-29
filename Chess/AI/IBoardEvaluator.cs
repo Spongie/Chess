@@ -7,5 +7,7 @@ namespace Chess.AI
         string Name { get; set; }
 
         float EvaluateBoard(ChessBoard board, Color color);
+
+        string GetBotId(int depth);
     }
 }

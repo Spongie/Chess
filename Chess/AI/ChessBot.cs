@@ -12,28 +12,51 @@ namespace Chess.AI
         private readonly IBoardEvaluator boardEvaluator;
         private readonly int maxDepth;
         private static ConcurrentDictionary<EvalCacheKey, float> boardEvalCache;
+        private bool testMode;
+        private bool cacheChanged;
 
-        public ChessBot(IBoardEvaluator evaluator, int depth)
+        public ChessBot(IBoardEvaluator evaluator, int depth, Color color, bool test)
         {
+            Color = color;
+            testMode = test;
             boardEvaluator = evaluator;
             maxDepth = depth;
             boardEvalCache = new ConcurrentDictionary<EvalCacheKey, float>();
         }
 
-        public Move FindMoveForColor(Color color, ChessBoard board)
+        public ChessBot(IBoardEvaluator evaluator, int depth, Color color)
         {
-            var baseMoves = board.GetAllAvailableMoves(color);
+            Color = color;
+            boardEvaluator = evaluator;
+            maxDepth = depth;
+            boardEvalCache = new ConcurrentDictionary<EvalCacheKey, float>(ConfigManager.LoadCache(boardEvaluator, maxDepth, Color));
+        }
+
+        public Color  Color { get; set; }
+
+        public void SaveCache()
+        {
+            ConfigManager.SaveCache(boardEvaluator, boardEvalCache, maxDepth, Color);
+        }
+
+        public Move FindMove(ChessBoard board)
+        {
+            var baseMoves = board.GetAllAvailableMoves(Color);
             var rootNodes = new ConcurrentBag<MoveNode>();
+            cacheChanged = false;
 
             Parallel.ForEach(baseMoves, baseMove =>
             {
-                rootNodes.Add(CreateRootMoveNode(color, board.DeepClone(), baseMove));
+                rootNodes.Add(CreateRootMoveNode(Color, board.DeepClone(), baseMove));
             });
 
             var random = new Random();
 
             if (!rootNodes.Any())
                 return null;
+
+            if (!testMode && cacheChanged)
+                SaveCache();
 
             return rootNodes.OrderByDescending(node => node.Score).ThenBy(node => random.Next()).First().Move;
         }
@@ -64,6 +87,7 @@ namespace Chess.AI
                 {
                     float score = boardEvaluator.EvaluateBoard(board.CopyWithMove(node.Move), color);
                     boardEvalCache.TryAdd(cacheKey, score);
+                    cacheChanged = true;
                     node.Score = score;
                 }
             }
@@ -128,7 +152,10 @@ namespace Chess.AI
                             var score = boardEvaluator.EvaluateBoard(chessBoard.CopyWithMove(move), color);
 
                             if (!boardEvalCache.ContainsKey(cacheKey))
+                            {
                                 boardEvalCache.TryAdd(cacheKey, score);
+                                cacheChanged = true;
+                            }
 
                             node.Score = score;
                         }
@@ -159,7 +186,10 @@ namespace Chess.AI
                 var score = boardEvaluator.EvaluateBoard(boardCopy, color);
 
                 if (!boardEvalCache.ContainsKey(cacheKey))
+                {
                     boardEvalCache.TryAdd(cacheKey, score);
+                    cacheChanged = true;
+                }
 
                 node.Score = score;
             }

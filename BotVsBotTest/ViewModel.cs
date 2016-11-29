@@ -56,8 +56,8 @@ namespace BotVsBotTest
             SelectedWhiteBot = availableBots[0];
             SelectedBlackBot = availableBots[0];
 
-            WhiteBot = new ChessBot(selectedWhiteBot.BoardEvaluator, whiteDepth);
-            BlackBot = new ChessBot(selectedBlackBot.BoardEvaluator, blackDepth);
+            WhiteBot = new ChessBot(selectedWhiteBot.BoardEvaluator, whiteDepth, Color.White);
+            BlackBot = new ChessBot(selectedBlackBot.BoardEvaluator, blackDepth, Color.Black);
         }
 
         public ObservableCollection<Move> Moves
@@ -157,12 +157,12 @@ namespace BotVsBotTest
 
         public void CommitWhiteBot()
         {
-            WhiteBot = new ChessBot(SelectedWhiteBot.BoardEvaluator, whiteDepth);
+            WhiteBot = new ChessBot(SelectedWhiteBot.BoardEvaluator, whiteDepth, Color.White);
         }
 
         public void CommitBlackBot()
         {
-            BlackBot = new ChessBot(selectedBlackBot.BoardEvaluator, blackDepth);
+            BlackBot = new ChessBot(selectedBlackBot.BoardEvaluator, blackDepth, Color.Black);
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -174,7 +174,7 @@ namespace BotVsBotTest
         {
             var bot = NextColor == Color.White ? WhiteBot : BlackBot;
 
-            var move = bot.FindMoveForColor(NextColor, Board);
+            var move = bot.FindMove(Board);
             MakeMove(move);
         }
 
@@ -201,7 +201,22 @@ namespace BotVsBotTest
                 TargetPosition = new Position(dropYIndex, dropXIndex)
             };
 
+            if (move.Piece is King && dropXIndex == startXIndex + 2)
+            {
+                move.IsCastleMove = true;
+                move.RookTargetPosition = new Position(startYIndex, dropXIndex - 1);
+                move.CastleRook = (Rook) Board.GetPiecesForColor(move.Piece.Color).First(piece => piece is Rook && Board.GetPiecePosition(piece).X > move.TargetPosition.X);
+            }
+            else if (move.Piece is King && dropXIndex == startXIndex - 2)
+            {
+                move.IsCastleMove = true;
+                move.RookTargetPosition = new Position(startYIndex, dropXIndex + 1);
+                move.CastleRook = (Rook)Board.GetPiecesForColor(move.Piece.Color).First(piece => piece is Rook && Board.GetPiecePosition(piece).X < move.TargetPosition.X);
+            }
+
             MakeMove(move);
+            if (selectedBlackBot.Name == "Player" && selectedWhiteBot.Name == "Player")
+                return;
 
             if (NextColor == Color.White && selectedBlackBot.Name == "Player")
             {

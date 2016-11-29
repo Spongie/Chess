@@ -25,6 +25,7 @@ namespace ChessTests
             board[0, 0] = new King(Color.Black);
             board[5, 0] = new Queen(Color.White);
             board[1, 5] = new Rook(Color.White);
+            board[7,7] = new King(Color.White);
 
             c.Board = board;
 
@@ -42,6 +43,7 @@ namespace ChessTests
             board[0, 0] = new King(Color.Black);
             board[0, 5] = new Queen(Color.White);
             board[1, 5] = new Rook(Color.White);
+            board[7, 7] = new King(Color.White);
 
             c.Board = board;
 
@@ -60,6 +62,7 @@ namespace ChessTests
             board[5, 1] = new Queen(Color.Black);
             board[0, 5] = new Queen(Color.White);
             board[1, 5] = new Rook(Color.White);
+            board[7, 7] = new King(Color.White);
 
             c.Board = board;
 
@@ -219,6 +222,22 @@ namespace ChessTests
 
             var move = new Move
             {
+                Piece = c.GetPieceAtPosition(3, 1),
+                TargetPosition = new Position(2, 3)
+            };
+
+            c.MakeMove(move);
+
+            Assert.AreEqual(1, c.GetAllAvailableMoves(c.Board[0, 3]).Count());
+        }
+
+        [TestMethod]
+        public void BlackKingBlockedFrontOpen_1Move()
+        {
+            var c = new ChessBoard();
+
+            var move = new Move
+            {
                 Piece = c.GetPieceAtPosition(4, 1),
                 TargetPosition = new Position(2, 4)
             };
@@ -235,13 +254,13 @@ namespace ChessTests
 
             var move = new Move
             {
-                Piece = c.GetPieceAtPosition(4, 6),
-                TargetPosition = new Position(5, 4)
+                Piece = c.GetPieceAtPosition(3, 6),
+                TargetPosition = new Position(5, 3)
             };
 
             c.MakeMove(move);
 
-            Assert.AreEqual(1, c.GetAllAvailableMoves(c.Board[7, 4]).Count());
+            Assert.AreEqual(1, c.GetAllAvailableMoves(c.Board[7, 3]).Count());
         }
 
         [TestMethod]
@@ -272,6 +291,22 @@ namespace ChessTests
             c.Board = board;
 
             Assert.AreEqual(0, c.GetAllAvailableMoves(c.Board[1, 0]).Count());
+        }
+
+        [TestMethod]
+        public void PawnAtEndBecomesQueen()
+        {
+            var c = ChessBoard.CreateFromFenString("rn1qk2r/1pP3p1/8/pb1n3p/N7/7P/PPPbNPP1/R1BQKBR1");
+
+            var move = new Move
+            {
+                Piece = c.Board[1, 2],
+                TargetPosition = new Position(0, 2)
+            };
+
+            c.MakeMove(move);
+
+            Assert.IsTrue(c.Board[0, 2] is Queen);
         }
     }
 }

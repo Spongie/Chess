@@ -70,11 +70,13 @@ namespace Chess
             var newBoard = (Piece[,])Board.Clone();
             var position = GetPiecePosition(move.Piece);
 
+            var oldId = move.Piece.Id;
+
             if (move.Piece is Pawn && move.Piece.Color == Color.White && move.TargetPosition.Y == 0)
-                move.Piece = new Queen(move.Piece.Color);
+                move.Piece = new Queen(move.Piece.Color, oldId);
 
             if (move.Piece is Pawn && move.Piece.Color == Color.Black && move.TargetPosition.Y == 7)
-                move.Piece = new Queen(move.Piece.Color);
+                move.Piece = new Queen(move.Piece.Color, oldId);
 
             newBoard[position.Y, position.X] = null;
             newBoard[move.TargetPosition.Y, move.TargetPosition.X] = move.Piece;
@@ -146,6 +148,18 @@ namespace Chess
             Board = GetBoardAfterMove(move);
             move.Piece.OnMoved();
 
+            if (move.IsCastleMove)
+            {
+                var castleMove = new Move
+                {
+                    Piece = move.CastleRook,
+                    TargetPosition = move.RookTargetPosition
+                };
+
+                Board = GetBoardAfterMove(castleMove);
+                move.Piece.OnMoved();
+            }
+
             var moves = GetAllAvailableMoves(InvertColor(move.Piece.Color));
 
             if (!moves.Any())
@@ -175,19 +189,27 @@ namespace Chess
         {
             var kingPosition = GetKingPosition(color);
 
-            var moves = GetAllAvailableMoves(InvertColor(color));
+            var moves = GetAllAvailableMovesWithBoard(InvertColor(color), this, false, true);
 
             return moves.Any(opponentMove => opponentMove.TargetPosition.Equals(kingPosition));
         }
 
-        public IEnumerable<Move> GetAllAvailableMovesWithBoard(Color color, ChessBoard board, bool checkIfCheck = true)
+        public IEnumerable<Move> GetAllAvailableMovesWithBoard(Color color, ChessBoard board, bool checkIfCheck = true, bool ignoreCastleMove = false)
         {
             var legalMoves = new List<Move>();
 
             foreach (Piece piece in board.Board)
             {
                 if (piece != null && piece.Color == color)
+                {
+                    if (piece is King)
+                        ((King) piece).IgnoreCastle = ignoreCastleMove;
+
                     legalMoves.AddRange(piece.GetLegalMoves(board));
+
+                    if (piece is King)
+                        ((King)piece).IgnoreCastle = !ignoreCastleMove;
+                }
             }
 
             if (checkIfCheck)
@@ -199,6 +221,11 @@ namespace Chess
         public Position GetKingPosition(Color color)
         {
             return GetKingPosition(color, Board);
+        }
+
+        private IEnumerable<Move> GetAllAvailableMoves(Color color, bool ignoreKing)
+        {
+            return GetAllAvailableMovesWithBoard(color, this);
         }
 
         public IEnumerable<Move> GetAllAvailableMoves(Color color)

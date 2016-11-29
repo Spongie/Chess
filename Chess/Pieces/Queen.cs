@@ -11,6 +11,11 @@ namespace Chess.Pieces
             MaxMoveLength = 7;
         }
 
+        public Queen(Color color, Guid id) : base(color, id)
+        {
+            MaxMoveLength = 7;
+        }
+
         public override IEnumerable<Move> GetLegalMoves(ChessBoard board)
         {
             var legalMoves = new List<Move>();

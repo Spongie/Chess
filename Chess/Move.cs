@@ -22,6 +22,9 @@ namespace Chess
 
         public Piece Piece { get; set; }
         public Position TargetPosition { get; set; }
+        public bool IsCastleMove { get; set; }
+        public Rook CastleRook { get; set; }
+        public Position RookTargetPosition { get; set; }
 
         public override string ToString()
         {

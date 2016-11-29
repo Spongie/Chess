@@ -25,11 +25,16 @@ namespace Chess.Pieces
     [Serializable]
     public abstract class Piece
     {
-        protected Piece(Color color)
+        protected Piece(Color color) : this(color, Guid.NewGuid())
+        {
+            
+        }
+
+        protected Piece(Color color, Guid id)
         {
             Color = color;
             MaxMoveLength = 1;
-            Id = Guid.NewGuid();
+            Id = id;
         }
 
         public Color Color { get; protected set; }
@@ -156,6 +161,7 @@ namespace Chess.Pieces
                 legalMoves.Add(move);
 
                 var pieceAtTarget = board.GetPieceAtPosition(move.TargetPosition.X, move.TargetPosition.Y);
+
                 if (pieceAtTarget != null && pieceAtTarget.Color == ChessBoard.InvertColor(Color))
                     return false;
 

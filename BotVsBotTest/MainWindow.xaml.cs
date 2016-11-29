@@ -91,6 +91,7 @@ namespace BotVsBotTest
 
                     Canvas.SetTop(rect, heightPerPiece * y);
                     Canvas.SetLeft(rect, widthPerPiece * x);
+                    Canvas.SetZIndex(rect, 0);
 
                     if (brush == Brushes.White)
                         brush = Brushes.DarkGoldenrod;
@@ -116,6 +117,7 @@ namespace BotVsBotTest
 
                     Canvas.SetTop(img, heightPerPiece * y);
                     Canvas.SetLeft(img, widthPerPiece * x);
+                    Canvas.SetZIndex(img, 1);
 
                     boardCanvas.Children.Add(img);
                 }
@@ -171,7 +173,7 @@ namespace BotVsBotTest
 
         private void MenuItem_BlackMove_Click(object sender, RoutedEventArgs e)
         {
-            viewModel.NextColor = Color.White;
+            viewModel.NextColor = Color.Black;
         }
 
         private void MenuItem_SetBoard_Click(object sender, RoutedEventArgs e)

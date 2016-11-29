@@ -19,5 +19,10 @@ namespace Chess.AI
 
             return myPieces - opponentPieces;
         }
+
+        public string GetBotId(int depth)
+        {
+            return $"OnlyPiecesCount_Depth{depth}";
+        }
     }
 }

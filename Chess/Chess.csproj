@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AI\CacheFileEntry.cs" />
     <Compile Include="AI\ChessBot.cs" />
     <Compile Include="AI\ConfigManager.cs" />
     <Compile Include="AI\EvalCacheKey.cs" />

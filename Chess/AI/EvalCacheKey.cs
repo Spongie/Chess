@@ -1,16 +1,23 @@
-﻿using Chess.Pieces;
+﻿using System;
+using Chess.Pieces;
 
 namespace Chess.AI
 {
+    [Serializable]
     public class EvalCacheKey
     {
-        private readonly Color color;
-        private readonly string fenString;
+        public Color Color1 { get; set; }
+        public string FenString { get; set; }
+
+        public EvalCacheKey()
+        {
+            
+        }
 
         public EvalCacheKey(string fenString, Color color)
         {
-            this.fenString = fenString;
-            this.color = color;
+            this.FenString = fenString;
+            this.Color1 = color;
         }
 
         public override bool Equals(object obj)
@@ -20,12 +27,12 @@ namespace Chess.AI
             if (other == null)
                 return false;
 
-            return other.fenString == fenString && other.color == color;
+            return other.FenString == FenString && other.Color1 == Color1;
         }
 
         public override int GetHashCode()
         {
-            return (fenString + color).GetHashCode();
+            return (FenString + Color1).GetHashCode();
         }
     }
 }

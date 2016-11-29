@@ -12,7 +12,7 @@ namespace ChessTests
         [TestMethod]
         public void MoveIsChosen()
         {
-            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 1);
+            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 1, Color.White, true);
 
             var board = new ChessBoard();
 
@@ -24,7 +24,7 @@ namespace ChessTests
 
             board.MakeMove(move);
 
-            var botMove = bot.FindMoveForColor(Color.White, board);
+            var botMove = bot.FindMove(board);
 
             Assert.AreEqual(new Position(5, 0), botMove.TargetPosition);
         }
@@ -32,7 +32,7 @@ namespace ChessTests
         [TestMethod]
         public void InCheckWhiteIllegalMoveBot()
         {
-            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 3);
+            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 3, Color.White, true);
 
             var c = new ChessBoard();
             var board = new Piece[8, 8];
@@ -57,7 +57,7 @@ namespace ChessTests
             c.Board = board;
 
             var allMoves = c.GetAllAvailableMoves(Color.White);
-            bot.FindMoveForColor(Color.White, c);
+            bot.FindMove(c);
 
             Assert.AreEqual(6, allMoves.Count());
         }
@@ -65,11 +65,11 @@ namespace ChessTests
         [TestMethod]
         public void Depth_2_Performance()
         {
-            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 2);
+            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 2, Color.White, true);
 
             var board = new ChessBoard();
 
-            var botMove = bot.FindMoveForColor(Color.White, board);
+            var botMove = bot.FindMove(board);
 
             Assert.IsTrue(true);
         }
@@ -77,11 +77,24 @@ namespace ChessTests
         [TestMethod]
         public void Depth_3_Performance()
         {
-            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 3);
+            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 3, Color.White, true);
 
             var board = new ChessBoard();
 
-            var botMove = bot.FindMoveForColor(Color.White, board);
+            var botMove = bot.FindMove(board);
+
+            Assert.IsTrue(true);
+        }
+
+
+        [TestMethod]
+        public void PawnAtEndBecomesQueen_BotHandlesIt()
+        {
+            var c = ChessBoard.CreateFromFenString("rn1qk2r/1pP3p1/8/pb1n3p/N7/7P/PPPbNPP1/R1BQKBR1");
+
+            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 3, Color.White, true);
+
+            var move = bot.FindMove(c);
 
             Assert.IsTrue(true);
         }
@@ -89,11 +102,11 @@ namespace ChessTests
         //[TestMethod]
         //public void Depth_4_Performance()
         //{
-        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 4);
+        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 4, true);
 
         //    var board = new ChessBoard();
 
-        //    var botMove = bot.FindMoveForColor(Color.White, board);
+        //    var botMove = bot.FindMove(Color.White, board);
 
         //    Assert.IsTrue(true);
         //}
@@ -101,11 +114,11 @@ namespace ChessTests
         //[TestMethod]
         //public void Depth_5_Performance()
         //{
-        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 5);
+        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 5, true);
 
         //    var board = new ChessBoard();
 
-        //    var botMove = bot.FindMoveForColor(Color.White, board);
+        //    var botMove = bot.FindMove(Color.White, board);
 
         //    Assert.IsTrue(true);
         //}
@@ -113,11 +126,11 @@ namespace ChessTests
         //[TestMethod]
         //public void Depth_6_Performance()
         //{
-        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 6);
+        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 6, true);
 
         //    var board = new ChessBoard();
 
-        //    var botMove = bot.FindMoveForColor(Color.White, board);
+        //    var botMove = bot.FindMove(Color.White, board);
 
         //    Assert.IsTrue(true);
         //}
