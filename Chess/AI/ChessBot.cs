@@ -134,6 +134,21 @@ namespace Chess.AI
 
                     chessBoard.Board = chessBoard.GetBoardAfterMove(move);
 
+                    float testScore = boardEvaluator.EvaluateBoard(board.CopyWithMove(move), color);
+                    boardEvalCache.TryAdd(cacheKey, testScore);
+
+                    if (testScore < -2)
+                    {
+                        return new List<MoveNode>
+                    {
+                        new MoveNode
+                        {
+                            Score = testScore,
+                            Children = null
+                        }
+                    };
+                    }
+
                     var node = new MoveNode
                     {
                         Children = BuildMoveTreeForColor(ChessBoard.InvertColor(color), originalColor, chessBoard, currentLevel + 1)

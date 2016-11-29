@@ -5,20 +5,17 @@ namespace Chess
 {
     public class Move
     {
-        private Dictionary<int, string> xToLetterCache;
-
-        public Move()
+        private static readonly Dictionary<int, string> xToLetterCache = new Dictionary<int, string>
         {
-            xToLetterCache = new Dictionary<int, string>();
-            xToLetterCache.Add(0, "A");
-            xToLetterCache.Add(1, "B");
-            xToLetterCache.Add(2, "C");
-            xToLetterCache.Add(3, "D");
-            xToLetterCache.Add(4, "E");
-            xToLetterCache.Add(5, "F");
-            xToLetterCache.Add(6, "G");
-            xToLetterCache.Add(7, "H");
-        }
+            {0, "A"},
+            {1, "B"},
+            {2, "C"},
+            {3, "D"},
+            {4, "E"},
+            {5, "F"},
+            {6, "G"},
+            {7, "H"}
+        };
 
         public Piece Piece { get; set; }
         public Position TargetPosition { get; set; }

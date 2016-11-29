@@ -112,38 +112,38 @@ namespace ChessTests
         }
 
         //[TestMethod]
-        //public void Depth_4_Performance()
+        //public void Depth_5_Performance()
         //{
-        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 4, true);
-
+        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 5, Color.White, true);
+        //
         //    var board = new ChessBoard();
-
-        //    var botMove = bot.FindMove(Color.White, board);
-
+        //
+        //    var botMove = bot.FindMove(board);
+        //
         //    Assert.IsTrue(true);
         //}
 
         [TestMethod]
-        public void Depth_5_Performance()
+        public void Depth_6_Performance()
         {
-            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 5, Color.White, true);
-
+            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 6, Color.White, true);
+        
             var board = new ChessBoard();
-
+        
             var botMove = bot.FindMove(board);
-
+        
             Assert.IsTrue(true);
         }
-
+        
         //[TestMethod]
-        //public void Depth_6_Performance()
+        //public void Depth_7_Performance()
         //{
-        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 6, true);
-
+        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 7, Color.White, true);
+        //
         //    var board = new ChessBoard();
-
-        //    var botMove = bot.FindMove(Color.White, board);
-
+        //
+        //    var botMove = bot.FindMove(board);
+        //
         //    Assert.IsTrue(true);
         //}
     }
