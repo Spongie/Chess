@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -235,6 +238,15 @@ namespace BotVsBotTest
                 Canvas.SetTop(selectedImage, e.GetPosition(boardCanvas).Y - (heightPerPiece / 2));
                 Canvas.SetLeft(selectedImage, e.GetPosition(boardCanvas).X - (widthPerPiece / 2));
             }
+        }
+
+        private void ButtonClick_DisplayMoves(object sender, RoutedEventArgs e)
+        {
+            var moves = viewModel.GetBotMoves().Select(move => move.ToString());
+
+            File.WriteAllLines("debug.txt", moves);
+
+            Process.Start("debug.txt");
         }
     }
 }

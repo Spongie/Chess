@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -226,6 +227,13 @@ namespace BotVsBotTest
             {
                 MakeBotMove();
             }
+        }
+
+        public List<MoveNode> GetBotMoves()
+        {
+            var bot = NextColor == Color.White ? WhiteBot : BlackBot;
+
+            return bot.GetMovesList(Board);
         }
     }
 }

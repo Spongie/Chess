@@ -37,8 +37,8 @@ namespace ChessTests
             var c = new ChessBoard();
             var board = new Piece[8, 8];
 
-            board[0, 2] = new King(Color.Black);
-            board[0, 4] = new Rook(Color.Black);
+            board[0, 2] = new King(Color.Black) {AmountOfMoves = 2};
+            board[0, 4] = new Rook(Color.Black) { AmountOfMoves = 1 };
             board[1, 6] = new Knight(Color.Black);
             board[2, 6] = new Pawn(Color.Black);
             board[2, 7] = new Pawn(Color.Black);
@@ -123,17 +123,17 @@ namespace ChessTests
         //    Assert.IsTrue(true);
         //}
 
-        [TestMethod]
-        public void Depth_6_Performance()
-        {
-            var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 6, Color.White, true);
-        
-            var board = new ChessBoard();
-        
-            var botMove = bot.FindMove(board);
-        
-            Assert.IsTrue(true);
-        }
+        //[TestMethod]
+        //public void Depth_6_Performance()
+        //{
+        //    var bot = new ChessBot(new OnlyPieceCountMatterEvaluator(), 6, Color.White, true);
+        //
+        //    var board = new ChessBoard();
+        //
+        //    var botMove = bot.FindMove(board);
+        //
+        //    Assert.IsTrue(true);
+        //}
         
         //[TestMethod]
         //public void Depth_7_Performance()

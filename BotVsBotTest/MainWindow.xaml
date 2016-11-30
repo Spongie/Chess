@@ -23,14 +23,15 @@
                 <RowDefinition Height="50*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="10*"/>
-                <ColumnDefinition Width="30*"/>
+                <ColumnDefinition Width="15*"/>
+                <ColumnDefinition Width="25*"/>
                 <ColumnDefinition Width="15*"/>
                 <ColumnDefinition Width="45*"/>
             </Grid.ColumnDefinitions>
             <StackPanel Grid.RowSpan="2">
                 <Button Content="Next Move" Click="Button_Click" Margin="5"></Button>
                 <Button Content="Auto Play" Click="Button_Click_1" Margin="5"></Button>
+                <Button Content="Display Moves" Click="ButtonClick_DisplayMoves" Margin="5"></Button>
             </StackPanel>
             <StackPanel Grid.Row="0" Grid.Column="1">
                 <Label Content="White Bot" />

@@ -22,5 +22,10 @@ namespace Chess.AI
             var random = new Random();
             return Children.OrderBy(child => child.Score).ThenBy(child => random.Next()).First().Score;
         }
+
+        public override string ToString()
+        {
+            return $"{Move} - {Score}";
+        }
     }
 }
