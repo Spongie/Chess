@@ -104,7 +104,7 @@ namespace Chess.AI
             if (boardWithMove.Winner.HasWinner)
             {
                 float score = boardEvaluator.EvaluateBoard(board.CopyWithMove(node.Move), color);
-                boardEvalCache.TryAdd(cacheKey, score);
+                //boardEvalCache.TryAdd(cacheKey, score);
                 node.Score = score;
                 winFoundOnRoot = true;
                 return node;
@@ -126,7 +126,7 @@ namespace Chess.AI
                 else
                 {
                     float score = boardEvaluator.EvaluateBoard(board.CopyWithMove(node.Move), color);
-                    boardEvalCache.TryAdd(cacheKey, score);
+                    //boardEvalCache.TryAdd(cacheKey, score);
                     cacheChanged = true;
                     node.Score = score;
                 }
@@ -181,7 +181,7 @@ namespace Chess.AI
                     chessBoard.Board = chessBoard.GetBoardAfterMove(move);
 
                     float testScore = boardEvaluator.EvaluateBoard(board.CopyWithMove(move), originalColor);
-                    boardEvalCache.TryAdd(cacheKey, testScore);
+                    //boardEvalCache.TryAdd(cacheKey, testScore);
 
                     if (testScore - baseValue <= -2)
                     {
@@ -212,7 +212,7 @@ namespace Chess.AI
 
                             if (!boardEvalCache.ContainsKey(cacheKey))
                             {
-                                boardEvalCache.TryAdd(cacheKey, score);
+                                //boardEvalCache.TryAdd(cacheKey, score);
                                 cacheChanged = true;
                             }
 
@@ -246,7 +246,7 @@ namespace Chess.AI
 
                 if (!boardEvalCache.ContainsKey(cacheKey))
                 {
-                    boardEvalCache.TryAdd(cacheKey, score);
+                    //boardEvalCache.TryAdd(cacheKey, score);
                     cacheChanged = true;
                 }
 
