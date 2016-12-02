@@ -58,9 +58,8 @@ namespace Chess
 
         public ChessBoard CopyWithMove(Move move)
         {
-            var board = new ChessBoard();
+            var board = JsonCopy();
 
-            board.Board = (Piece[,]) Board.Clone();
             board.MakeMove(move);
 
             return board;

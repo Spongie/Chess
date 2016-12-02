@@ -151,6 +151,17 @@ namespace Chess.AI
 
             var cacheKey = new EvalCacheKey(board.GetFenString(), color);
 
+            var initScore = boardEvaluator.EvaluateBoard(board, originalColor);
+            if (initScore - baseValue <= -4)
+            {
+                nodes.Add(new MoveNode
+                {
+                    Score = initScore - baseValue,
+                    Children = null
+                });
+                return nodes;
+            }
+
             if (boardEvalCache.ContainsKey(cacheKey))
             {
                 return new List<MoveNode>
@@ -176,22 +187,20 @@ namespace Chess.AI
                 }
                 else
                 {
-                    var chessBoard = board.JsonCopy();
-
-                    chessBoard.Board = chessBoard.GetBoardAfterMove(move);
+                    var chessBoard = board.CopyWithMove(move);
 
                     float testScore = boardEvaluator.EvaluateBoard(board.CopyWithMove(move), originalColor);
                     //boardEvalCache.TryAdd(cacheKey, testScore);
 
-                    if (testScore - baseValue <= -2)
-                    {
-                        nodes.Add(new MoveNode
-                        {
-                            Score = testScore - baseValue,
-                            Children = null
-                        });
-                        return nodes;
-                    }
+                    //if (testScore - baseValue <= -2)
+                    //{
+                    //    nodes.Add(new MoveNode
+                    //    {
+                    //        Score = testScore - baseValue,
+                    //        Children = null
+                    //    });
+                    //    return nodes;
+                    //}
 
                     var node = new MoveNode
                     {
