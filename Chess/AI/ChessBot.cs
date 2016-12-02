@@ -192,19 +192,10 @@ namespace Chess.AI
                     float testScore = boardEvaluator.EvaluateBoard(board.CopyWithMove(move), originalColor);
                     //boardEvalCache.TryAdd(cacheKey, testScore);
 
-                    //if (testScore - baseValue <= -2)
-                    //{
-                    //    nodes.Add(new MoveNode
-                    //    {
-                    //        Score = testScore - baseValue,
-                    //        Children = null
-                    //    });
-                    //    return nodes;
-                    //}
-
                     var node = new MoveNode
                     {
-                        Children = BuildMoveTreeForColor(ChessBoard.InvertColor(color), originalColor, chessBoard, currentLevel + 1, baseValue)
+                        Children = BuildMoveTreeForColor(ChessBoard.InvertColor(color), originalColor, chessBoard, currentLevel + 1, baseValue),
+                        Move = move
                     };
 
                     if (node.Children.Any())
@@ -240,7 +231,8 @@ namespace Chess.AI
         {
             var node = new MoveNode
             {
-                Children = null
+                Children = null,
+                Move = move
             };
 
             var boardCopy = board.CopyWithMove(move);
