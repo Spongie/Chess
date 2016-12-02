@@ -223,7 +223,8 @@ namespace BotVsBotTest
             int dropXIndex = (int) (e.GetPosition(boardCanvas).X / widthPerPiece);
             int dropYIndex = (int)(e.GetPosition(boardCanvas).Y / heightPerPiece);
 
-            viewModel.MakeDragMove(startXIndex, startYIndex, dropXIndex, dropYIndex);
+            if (dropXIndex != startXIndex || dropYIndex != startYIndex)
+                viewModel.MakeDragMove(startXIndex, startYIndex, dropXIndex, dropYIndex);
 
             selectedImage = null;
         }
