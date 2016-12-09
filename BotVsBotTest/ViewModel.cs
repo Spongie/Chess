@@ -196,6 +196,9 @@ namespace BotVsBotTest
 
         public void MakeDragMove(int startXIndex, int startYIndex, int dropXIndex, int dropYIndex)
         {
+            if (Board.GetPieceAtPosition(startXIndex, startYIndex) == null)
+                return;
+
             var move = new Move
             {
                 Piece = Board.GetPieceAtPosition(startXIndex, startYIndex),
