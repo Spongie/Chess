@@ -10,8 +10,8 @@ namespace Chess
     public class ChessBoard
     {
         private const int BoardSize = 8;
-        private bool isWhiteInCheck = false;
-        private bool isBlackInCheck = false;
+        private bool isWhiteInCheck;
+        private bool isBlackInCheck;
 
         public ChessBoard()
         {
