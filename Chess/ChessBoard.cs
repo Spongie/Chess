@@ -10,6 +10,8 @@ namespace Chess
     public class ChessBoard
     {
         private const int BoardSize = 8;
+        private bool isWhiteInCheck = false;
+        private bool isBlackInCheck = false;
 
         public ChessBoard()
         {
@@ -160,6 +162,8 @@ namespace Chess
                 move.Piece.OnMoved();
             }
 
+            SetCheckValues(InvertColor(move.Piece.Color));
+
             var moves = GetAllAvailableMoves(InvertColor(move.Piece.Color));
 
             if (!moves.Any())
@@ -187,11 +191,21 @@ namespace Chess
 
         public  bool IsInCheck(Color color)
         {
+            return color == Color.Black ? isBlackInCheck : isWhiteInCheck;
+        }
+
+        public void SetCheckValues(Color color)
+        {
             var kingPosition = GetKingPosition(color);
 
             var moves = GetAllAvailableMovesWithBoard(InvertColor(color), this, false, true);
 
-            return moves.Any(opponentMove => opponentMove.TargetPosition.Equals(kingPosition));
+            var check = moves.Any(opponentMove => opponentMove.TargetPosition.Equals(kingPosition));
+
+            if (color == Color.Black)
+                isBlackInCheck = check;
+            else
+                isWhiteInCheck = check;
         }
 
         public IEnumerable<Move> GetAllAvailableMovesWithBoard(Color color, ChessBoard board, bool checkIfCheck = true, bool ignoreCastleMove = false)

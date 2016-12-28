@@ -11,7 +11,7 @@ namespace Chess.AI
     {
         private readonly IBoardEvaluator boardEvaluator;
         private readonly int maxDepth;
-        private readonly ConcurrentDictionary<EvalCacheKey, float> boardEvalCache;
+        private ConcurrentDictionary<EvalCacheKey, float> boardEvalCache;
         private readonly bool testMode;
         private bool cacheChanged;
         private bool winFoundOnRoot;
@@ -42,6 +42,7 @@ namespace Chess.AI
 
         public Move FindMove(ChessBoard board)
         {
+            boardEvalCache = new ConcurrentDictionary<EvalCacheKey, float>();
             var baseMoves = board.GetAllAvailableMoves(Color);
             var rootNodes = new ConcurrentBag<MoveNode>();
             cacheChanged = false;
@@ -64,6 +65,7 @@ namespace Chess.AI
 
         public List<MoveNode> GetMovesList(ChessBoard board)
         {
+            boardEvalCache = new ConcurrentDictionary<EvalCacheKey, float>();
             var baseMoves = board.GetAllAvailableMoves(Color);
             var rootNodes = new ConcurrentBag<MoveNode>();
             cacheChanged = false;
