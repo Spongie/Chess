@@ -38,14 +38,16 @@ namespace Chess.Pieces
                 moves.Add(new Move
                 {
                     Piece = this,
-                    TargetPosition = new Position(position.Y + attackingDirection, position.X + 1)
+                    TargetPosition = new Position(position.Y + attackingDirection, position.X + 1),
+                    FromPosition = position
                 });
 
             if (attackPieceLight != null && attackPieceLight.Color != Color)
                 moves.Add(new Move
                 {
                     Piece = this,
-                    TargetPosition = new Position(position.Y + attackingDirection, position.X - 1)
+                    TargetPosition = new Position(position.Y + attackingDirection, position.X - 1),
+                    FromPosition = position
                 });
 
             return moves;

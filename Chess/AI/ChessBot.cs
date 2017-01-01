@@ -42,14 +42,16 @@ namespace Chess.AI
 
         public Move FindMove(ChessBoard board)
         {
+            var color = Color == Color.Nobody ? board.ColorToMove : Color;
+
             boardEvalCache = new ConcurrentDictionary<EvalCacheKey, float>();
-            var baseMoves = board.GetAllAvailableMoves(Color);
+            var baseMoves = board.GetAllAvailableMoves(color);
             var rootNodes = new ConcurrentBag<MoveNode>();
             cacheChanged = false;
 
             Parallel.ForEach(baseMoves, baseMove =>
             {
-                rootNodes.Add(CreateRootMoveNode(Color, board.JsonCopy(), baseMove));
+                rootNodes.Add(CreateRootMoveNode(color, board.JsonCopy(), baseMove));
             });
 
             var random = new Random();
@@ -101,12 +103,12 @@ namespace Chess.AI
             };
 
             var boardWithMove = board.CopyWithMove(node.Move);
-            var cacheKey = new EvalCacheKey(boardWithMove.GetFenString(), color);
+            var cacheKey = new EvalCacheKey(boardWithMove.GetFenString());
 
             if (boardWithMove.Winner.HasWinner)
             {
                 float score = boardEvaluator.EvaluateBoard(board.CopyWithMove(node.Move), color);
-                //boardEvalCache.TryAdd(cacheKey, score);
+                boardEvalCache.TryAdd(cacheKey, score);
                 node.Score = score;
                 winFoundOnRoot = true;
                 return node;
@@ -121,14 +123,14 @@ namespace Chess.AI
 
             if (node.Children == null || !node.Children.Any())
             {
-                cacheKey = new EvalCacheKey(board.CopyWithMove(node.Move).GetFenString(), color);
+                cacheKey = new EvalCacheKey(board.CopyWithMove(node.Move).GetFenString());
 
                 if (boardEvalCache.ContainsKey(cacheKey))
                     node.Score = boardEvalCache[cacheKey];
                 else
                 {
                     float score = boardEvaluator.EvaluateBoard(board.CopyWithMove(node.Move), color);
-                    //boardEvalCache.TryAdd(cacheKey, score);
+                    boardEvalCache.TryAdd(cacheKey, score);
                     cacheChanged = true;
                     node.Score = score;
                 }
@@ -151,7 +153,7 @@ namespace Chess.AI
 
             var nodes = new List<MoveNode>();
 
-            var cacheKey = new EvalCacheKey(board.GetFenString(), color);
+            var cacheKey = new EvalCacheKey(board.GetFenString());
 
             var initScore = boardEvaluator.EvaluateBoard(board, originalColor);
             if (initScore - baseValue <= -4)
@@ -192,7 +194,7 @@ namespace Chess.AI
                     var chessBoard = board.CopyWithMove(move);
 
                     float testScore = boardEvaluator.EvaluateBoard(board.CopyWithMove(move), originalColor);
-                    //boardEvalCache.TryAdd(cacheKey, testScore);
+                    boardEvalCache.TryAdd(cacheKey, testScore);
 
                     var node = new MoveNode
                     {
@@ -204,7 +206,7 @@ namespace Chess.AI
                         node.Score = color == originalColor ? node.GetWorstChild() : node.GetBestChild();
                     else
                     {
-                        cacheKey = new EvalCacheKey(board.GetFenString(), color);
+                        cacheKey = new EvalCacheKey(board.GetFenString());
 
                         if (boardEvalCache.ContainsKey(cacheKey))
                             node.Score = boardEvalCache[cacheKey] - baseValue;
@@ -214,7 +216,7 @@ namespace Chess.AI
 
                             if (!boardEvalCache.ContainsKey(cacheKey))
                             {
-                                //boardEvalCache.TryAdd(cacheKey, score);
+                                boardEvalCache.TryAdd(cacheKey, score);
                                 cacheChanged = true;
                             }
 
@@ -239,7 +241,7 @@ namespace Chess.AI
 
             var boardCopy = board.CopyWithMove(move);
 
-            var cacheKey = new EvalCacheKey(boardCopy.GetFenString(), color);
+            var cacheKey = new EvalCacheKey(boardCopy.GetFenString());
 
             if (boardEvalCache.ContainsKey(cacheKey))
                 node.Score = boardEvalCache[cacheKey];
@@ -249,7 +251,7 @@ namespace Chess.AI
 
                 if (!boardEvalCache.ContainsKey(cacheKey))
                 {
-                    //boardEvalCache.TryAdd(cacheKey, score);
+                    boardEvalCache.TryAdd(cacheKey, score);
                     cacheChanged = true;
                 }
 

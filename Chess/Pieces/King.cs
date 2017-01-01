@@ -78,7 +78,8 @@ namespace Chess.Pieces
                         TargetPosition = new Position(myPos.Y, myPos.X + 2),
                         IsCastleMove = true,
                         CastleRook = (Rook) rightRook,
-                        RookTargetPosition = new Position(myPos.Y, myPos.X + 1)
+                        RookTargetPosition = new Position(myPos.Y, myPos.X + 1),
+                        FromPosition = myPos
                     }, legalMoves, board);
             }
         }
@@ -104,7 +105,8 @@ namespace Chess.Pieces
                         TargetPosition = new Position(myPos.Y, myPos.X - 2),
                         IsCastleMove = true,
                         CastleRook = (Rook)leftRook,
-                        RookTargetPosition = new Position(myPos.Y, myPos.X - 1)
+                        RookTargetPosition = new Position(myPos.Y, myPos.X - 1),
+                        FromPosition = myPos
                     }, legalMoves, board);
             }
         }

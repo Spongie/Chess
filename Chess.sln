@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chess", "Chess\Chess.csproj", "{9B578258-093C-4B70-983D-BF46CEF79D9D}"
 EndProject
@@ -9,7 +9,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChessTests", "ChessTests\Ch
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BotVsBotTest", "BotVsBotTest\BotVsBotTest.csproj", "{A7AEBC58-8D6E-4733-8AB3-ECD6411BE125}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UCI", "UCI\UCI.csproj", "{C6DE2FDB-0BB1-4111-ABDE-45883EA1158D}"
+EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -27,6 +32,10 @@ Global
 		{A7AEBC58-8D6E-4733-8AB3-ECD6411BE125}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A7AEBC58-8D6E-4733-8AB3-ECD6411BE125}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A7AEBC58-8D6E-4733-8AB3-ECD6411BE125}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6DE2FDB-0BB1-4111-ABDE-45883EA1158D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6DE2FDB-0BB1-4111-ABDE-45883EA1158D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6DE2FDB-0BB1-4111-ABDE-45883EA1158D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6DE2FDB-0BB1-4111-ABDE-45883EA1158D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

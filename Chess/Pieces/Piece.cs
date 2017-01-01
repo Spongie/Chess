@@ -172,6 +172,7 @@ namespace Chess.Pieces
         {
             if (move != null)
             {
+                move.FromPosition = board.GetPiecePosition(this);
                 legalMoves.Add(move);
 
                 var pieceAtTarget = board.GetPieceAtPosition(move.TargetPosition.X, move.TargetPosition.Y);

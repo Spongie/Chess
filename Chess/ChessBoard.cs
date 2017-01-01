@@ -17,11 +17,17 @@ namespace Chess
         {
             Board = new Piece[BoardSize, BoardSize];
             Winner = new Winner { Color = Color.White, HasWinner = false };
+            ColorToMove = Color.White;
 
             GenerateBlackSide();
             GenerateWhiteSide();
         }
-        
+
+        public ChessBoard(string fenString)
+        {
+
+        }
+
         public Piece[,] Board { get; set; }
 
         private void GenerateWhiteSide()
@@ -172,6 +178,8 @@ namespace Chess
 
                 Winner = draw ? new Winner { Color = Color.Nobody, HasWinner = true } : new Winner { Color = move.Piece.Color, HasWinner = true };
             }
+
+            ColorToMove = InvertColor(ColorToMove);
         }
 
         public IEnumerable<Move> GetAllAvailableMoves(Piece piece)
@@ -359,5 +367,6 @@ namespace Chess
         }
 
         public Winner Winner { get; set; }
+        public Color ColorToMove { get; set; }
     }
 }

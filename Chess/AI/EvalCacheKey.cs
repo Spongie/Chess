@@ -6,8 +6,8 @@ namespace Chess.AI
     [Serializable]
     public class EvalCacheKey
     {
-        public Color Color1 { get; set; }
-        public string FenString { get; set; }
+        public Color Color { get; set; }
+        public string FenString { get; }
 
         public EvalCacheKey()
         {
@@ -16,8 +16,13 @@ namespace Chess.AI
 
         public EvalCacheKey(string fenString, Color color)
         {
-            this.FenString = fenString;
-            this.Color1 = color;
+            FenString = fenString;
+            Color = color;
+        }
+
+        public EvalCacheKey(string fenString)
+        {
+            FenString = fenString;
         }
 
         public override bool Equals(object obj)
@@ -27,12 +32,12 @@ namespace Chess.AI
             if (other == null)
                 return false;
 
-            return other.FenString == FenString && other.Color1 == Color1;
+            return other.FenString == FenString;
         }
 
         public override int GetHashCode()
         {
-            return (FenString + Color1).GetHashCode();
+            return FenString.GetHashCode();
         }
     }
 }
